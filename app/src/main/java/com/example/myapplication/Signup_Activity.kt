@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class Signup_Activity : AppCompatActivity() {
-
+    //lol
     private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
