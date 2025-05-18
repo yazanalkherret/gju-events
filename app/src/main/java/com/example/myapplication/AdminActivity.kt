@@ -21,10 +21,10 @@ class AdminActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApplicationTheme { // Use your existing theme or create a new one
+            MyApplicationTheme {
                 val navController = rememberNavController()
                 val eventViewModel: EventViewModel = viewModel()
-                HomeScreen(viewModel = eventViewModel)
+                val userViewModel: UserViewModel = viewModel() // Add this
 
                 Scaffold(
                     bottomBar = { BottomNavigationBar(navController = navController) }
@@ -37,7 +37,8 @@ class AdminActivity : ComponentActivity() {
                     ) {
                         NavigationHost(
                             navController = navController,
-                            viewModel = viewModel()
+                            eventViewModel = eventViewModel, // Pass explicitly
+                            userViewModel = userViewModel    // Pass explicitly
                         )
                     }
                 }

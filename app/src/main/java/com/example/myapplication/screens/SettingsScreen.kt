@@ -1,7 +1,5 @@
 package com.example.myapplication.screens
 
-
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.ExitToApp
-//import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -27,24 +24,34 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.EventViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.UserViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun SettingsScreen(viewModel: EventViewModel) {
+fun SettingsScreen(
+    userViewModel: UserViewModel = viewModel(),
+    onLogout: () -> Unit
+) {
+    val userData by userViewModel.userData.collectAsState()
+    val context = LocalContext.current
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
         item {
-            // User Profile Card
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 elevation = CardDefaults.cardElevation(4.dp)
@@ -62,12 +69,12 @@ fun SettingsScreen(viewModel: EventViewModel) {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Guest User",
+                        text = userData?.email ?: "Loading...",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "guest@example.com",
+                        text = "Role: ${userData?.role?.replaceFirstChar { it.uppercase() } ?: "User"}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -76,29 +83,19 @@ fun SettingsScreen(viewModel: EventViewModel) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Settings Options
             SettingsButton(
                 icon = Icons.Filled.Lock,
-                text = "Past Events",
-                onClick = {}
-            )
-
-            SettingsButton(
-                icon = Icons.Filled.Lock,
-                text = "Change Password",
-                onClick = {}
-            )
-
-            SettingsButton(
-                icon = Icons.Filled.Person,
-                text = "Manage Admins",
+                text = "Certificates: ${userData?.certificate ?: 0}",
                 onClick = {}
             )
 
             SettingsButton(
                 icon = Icons.Filled.ExitToApp,
                 text = "Logout",
-                onClick = {}
+                onClick = {
+                    FirebaseAuth.getInstance().signOut()
+                    onLogout()
+                }
             )
         }
     }
@@ -111,8 +108,7 @@ fun SettingsButton(icon: ImageVector, text: String, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        shape = MaterialTheme.shapes.medium,
-        enabled = false
+        shape = MaterialTheme.shapes.medium
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

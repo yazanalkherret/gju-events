@@ -74,6 +74,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
     implementation(libs.coil.core)
     implementation(libs.coil.compose)
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation ("com.google.firebase:firebase-firestore-ktx:24.4.1")
 
 
 
