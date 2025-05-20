@@ -20,7 +20,7 @@ import com.example.myapplication.components.EventItem
 @Composable
 fun HomeScreen(
     viewModel: EventViewModel,
-    onEventClick: (Int) -> Unit
+    onEventClick: (String) -> Unit
                ) {
     // Correct way to observe StateFlow
     val events by viewModel.events.collectAsState()

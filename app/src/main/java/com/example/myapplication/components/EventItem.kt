@@ -34,7 +34,11 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
-fun EventItem(event: Event, onCardClick: () -> Unit) {
+fun EventItem(
+    event: Event,
+    onCardClick: () -> Unit)
+{
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -58,9 +62,15 @@ fun EventItem(event: Event, onCardClick: () -> Unit) {
                     ) {
                         // Left Column (Image + Date/Time)
                         Column(modifier = Modifier.width(100.dp)) {
-                            event.imageUri?.let { uri ->
+                            event.imageBase64?.let { base64 ->
+                                val mimeType = when {
+                                    base64.startsWith("/9j") -> "jpeg"
+                                    base64.startsWith("iVBORw0KGgo") -> "png"
+                                    else -> "jpeg" // default
+                                }
+                                val imageUri = "data:image/$mimeType;base64,$base64"
                                 Image(
-                                    painter = rememberAsyncImagePainter(uri),
+                                    painter = rememberAsyncImagePainter(imageUri),
                                     contentDescription = "Event Image",
                                     modifier = Modifier
                                         .size(100.dp, 120.dp)

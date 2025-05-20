@@ -37,7 +37,7 @@ sealed class Screen(
 
     // For screens without icons
     object EventDetails : Screen("eventDetails/{eventId}", "Event Details") {
-        fun createRoute(eventId: Int) = "eventDetails/$eventId"
+        fun createRoute(eventId: String) = "eventDetails/$eventId" // Changed to String
     }
 
     object ManageAdmins : Screen("manageAdmins", "Manage Admins")
@@ -75,12 +75,12 @@ fun NavigationHost(
 
         composable(
             route = Screen.EventDetails.route,
-            arguments = listOf(navArgument("eventId") { type = NavType.IntType })
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType  })
         ) { backStackEntry ->
             EventDetailsScreen(
                 navController = navController,
                 viewModel = eventViewModel,
-                eventId = backStackEntry.arguments?.getInt("eventId") ?: 0
+                eventId = backStackEntry.arguments?.getString("eventId") ?: ""
             )
         }
     }

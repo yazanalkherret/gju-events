@@ -1,6 +1,11 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 package com.example.myapplication.screens
 
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +55,25 @@ import java.util.Calendar
 import java.util.Locale
 import com.example.event_planner.utils.rememberImagePicker
 import java.time.LocalTime
+import android.util.Base64
+
+
+@Composable
+fun rememberImagePicker(): Pair<Uri?, () -> Unit> {
+    val context = LocalContext.current
+    val imageUri = remember { mutableStateOf<Uri?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> imageUri.value = uri }
+    )
+
+    val pickImage = {
+        launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    return Pair(imageUri.value, pickImage)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -202,9 +226,25 @@ fun CreateEventScreen(viewModel: EventViewModel) {
         )
         Spacer(modifier = Modifier.height(24.dp))
 
+        val base64Image = selectedImageUri?.let { uri ->
+            context.contentResolver.openInputStream(uri)?.use { stream ->
+                val bytes = stream.readBytes()
+                Base64.encodeToString(bytes, Base64.NO_WRAP) // Changed to NO_WRAP
+            }
+        }
+
         // Create Button
         Button(
             onClick = {
+
+                val base64Image = selectedImageUri?.let { uri ->
+                    context.contentResolver.openInputStream(uri)?.use { stream ->
+                        val bytes = stream.readBytes()
+                        Base64.encodeToString(bytes, Base64.NO_WRAP) // Changed to NO_WRAP
+                    }
+                }
+
+
                 val calendar = Calendar.getInstance().apply {
                     timeInMillis = datePickerState.selectedDateMillis ?: System.currentTimeMillis()
                     set(Calendar.HOUR_OF_DAY, timePickerState.hour)
@@ -212,22 +252,34 @@ fun CreateEventScreen(viewModel: EventViewModel) {
                 }
 
                 val newEvent = Event(
-                    id = viewModel.events.value.size + 1,
+                    //id = viewModel.events.value.size + 1,
                     title = title,
                     room = room,
                     date = dateFormatter.format(calendar.time),
                     time = timeFormatter.format(calendar.time),
                     description = description,
-                    imageUri = selectedImageUri?.toString()
+                    imageBase64 = base64Image
                 )
-                viewModel.addEvent(newEvent)
-
-                // Reset fields
-                title = ""
-                room = ""
-                description = ""
-                datePickerState.reset()
-                timePickerState.reset()
+                viewModel.addEvent(
+                    event = newEvent,
+                    onSuccess = {
+                        // Clear fields
+                        title = ""
+                        room = ""
+                        datePickerState.reset()  // Reset date picker
+                        timePickerState.reset()
+                        description = ""
+                        Toast.makeText(context, "Event added successfully!", Toast.LENGTH_SHORT).show()
+                    },
+                    onError = { e: Exception ->  // Explicitly specify the Exception type here
+                        Toast.makeText(
+                            context,
+                            "Failed to add event: ${e.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        println("Upload failed: ${e.message}")
+                    }
+                )
             },
             modifier = Modifier.fillMaxWidth()
         ) {

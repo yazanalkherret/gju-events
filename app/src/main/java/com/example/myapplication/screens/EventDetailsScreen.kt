@@ -22,7 +22,7 @@ import androidx.compose.foundation.Image
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, eventId: Int) {
+fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, eventId: String) {
     // Fetch event details from ViewModel
     val event = viewModel.getEventById(eventId)
 
@@ -48,16 +48,24 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
                 .fillMaxSize()
         ) {
             // Event Image
-            event?.imageUri?.let { uri ->
-                Image(
-                    painter = rememberAsyncImagePainter(uri),
-                    contentDescription = "Event Image",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
-                        .clip(MaterialTheme.shapes.large),
-                    contentScale = ContentScale.Crop
-                )
+            if (event != null) {
+                event.imageBase64?.let { base64 ->
+                    val mimeType = when {
+                        base64.startsWith("/9j") -> "jpeg"
+                        base64.startsWith("iVBORw0KGgo") -> "png"
+                        else -> "jpeg" // default
+                    }
+                    val imageUri = "data:image/$mimeType;base64,$base64"
+                    Image(
+                        painter = rememberAsyncImagePainter(imageUri),
+                        contentDescription = "Event Image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                            .clip(MaterialTheme.shapes.large),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             // Event Content
