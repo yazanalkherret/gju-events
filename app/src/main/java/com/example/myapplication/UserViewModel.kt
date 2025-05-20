@@ -10,9 +10,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class UserData(
+    val id: String = "",
     val email: String = "",
     val role: String = "user",
-    val certificate: Int = 1
+    val certificate: Int = 0
 )
 
 class UserViewModel : ViewModel() {

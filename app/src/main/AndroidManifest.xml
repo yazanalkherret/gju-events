@@ -19,19 +19,19 @@
             android:name=".AdminActivity"
             android:exported="false" />
         <activity
-            android:name=".HomePage"
+            android:name=".XMLScreens.HomePage"
             android:exported="false" />
         <activity
-            android:name=".Forgot_pass_Activity"
+            android:name=".XMLScreens.Forgot_pass_Activity"
             android:exported="false" />
         <activity
             android:name=".verficationpage"
             android:exported="false" />
         <activity
-            android:name=".Signup_Activity"
+            android:name=".XMLScreens.Signup_Activity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".XMLScreens.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

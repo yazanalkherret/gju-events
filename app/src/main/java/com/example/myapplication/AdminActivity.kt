@@ -24,7 +24,7 @@ class AdminActivity : ComponentActivity() {
             MyApplicationTheme {
                 val navController = rememberNavController()
                 val eventViewModel: EventViewModel = viewModel()
-                val userViewModel: UserViewModel = viewModel() // Add this
+                val userViewModel: UserViewModel = viewModel()
 
                 Scaffold(
                     bottomBar = { BottomNavigationBar(navController = navController) }
@@ -37,8 +37,8 @@ class AdminActivity : ComponentActivity() {
                     ) {
                         NavigationHost(
                             navController = navController,
-                            eventViewModel = eventViewModel, // Pass explicitly
-                            userViewModel = userViewModel    // Pass explicitly
+                            eventViewModel = eventViewModel,
+                            userViewModel = userViewModel
                         )
                     }
                 }
