@@ -7,7 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.*
-import com.example.myapplication.XMLScreens.HomePage
+import com.example.myapplication.utils.UserActivity
+//import com.example.myapplication.XMLScreens.HomePage
 import com.example.myapplication.viewmodels.LoginViewModel
 
 
@@ -26,7 +27,7 @@ class Login_Activity : ComponentActivity() {
                         finish()
                     },
                     onNavigateToHome = {
-                        val intent = Intent(this, HomePage::class.java)
+                        val intent = Intent(this, UserActivity::class.java)
                         startActivity(intent)
                         finish()
                     })

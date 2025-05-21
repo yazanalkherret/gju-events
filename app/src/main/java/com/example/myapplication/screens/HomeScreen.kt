@@ -13,12 +13,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.components.EventItem
+import com.example.myapplication.components.Screen
 
 @Composable
-fun HomeScreen(viewModel: EventViewModel) {
+fun HomeScreen(
+    viewModel: EventViewModel,
+    navController: NavController
+) {
 
     val events by viewModel.events.collectAsState()
 
@@ -35,7 +41,15 @@ fun HomeScreen(viewModel: EventViewModel) {
         } else {
             LazyColumn {
                 items(items = events.takeLast(3).reversed()) { event ->
-                    EventItem(event = event)
+                    EventItem(
+                        event = event,
+                        onCardClick = {
+                            navController.navigate(Screen.EventDetails.createRoute(event.id))
+                        },
+                        onAttendanceClick = {
+                            navController.navigate(Screen.Attendance.createRoute(event.id))
+                        }
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }

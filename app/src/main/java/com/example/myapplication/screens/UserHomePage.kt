@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.myapplication.EventViewModel
+import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.components.EventItem
 
 @Composable

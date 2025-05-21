@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier  // Added missing import
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.components.user.UserBottomNavigationBar
 import com.example.myapplication.components.user.UserNavigationHost
-import com.example.myapplication.EventViewModel
-import com.example.myapplication.UserViewModel
+import com.example.myapplication.viewmodels.EventViewModel
+import com.example.myapplication.viewmodels.UserViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 class UserActivity : ComponentActivity() {

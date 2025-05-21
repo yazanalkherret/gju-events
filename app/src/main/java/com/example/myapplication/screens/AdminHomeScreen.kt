@@ -14,12 +14,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.components.EventItem
+import com.example.myapplication.components.Screen
 
 @Composable
 fun HomeScreen(
     viewModel: EventViewModel,
+    navController: NavController,
     onEventClick: (String) -> Unit
                ) {
     // Correct way to observe StateFlow
@@ -40,8 +43,13 @@ fun HomeScreen(
                 items(items = events.takeLast(3).reversed()) { event ->
                     EventItem(
                         event = event,
-                        onCardClick = { onEventClick(event.id) }
-                        )
+                        onCardClick = {
+                            navController.navigate(Screen.EventDetails.createRoute(event.id))
+                        },
+                        onAttendanceClick = {
+                            navController.navigate(Screen.Attendance.createRoute(event.id))
+                        }
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }

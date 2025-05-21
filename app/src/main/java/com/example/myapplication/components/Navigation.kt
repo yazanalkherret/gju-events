@@ -1,5 +1,6 @@
 package com.example.myapplication.components
 
+import AttendanceScreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
@@ -37,11 +38,16 @@ sealed class Screen(
         object Settings : BottomNavScreen("settings", "Settings", Icons.Default.Settings)
 
     }
+    object Attendance : Screen("attendance/{eventId}", "Attendance") {
+        fun createRoute(eventId: String) = "attendance/$eventId"
+    }
 
 
     object EventDetails : Screen("eventDetails/{eventId}", "Event Details") {
         fun createRoute(eventId: String) = "eventDetails/$eventId" // Changed to String
     }
+
+
 
     object ManageAdmins : Screen("manageAdmins", "Manage Admins")
 }
@@ -56,14 +62,18 @@ fun NavigationHost(
         navController = navController,
         startDestination = Screen.BottomNavScreen.Home.route // Fixed reference
     ) {
-        composable(Screen.BottomNavScreen.Home.route) { // Fixed reference
-            HomeScreen(viewModel = eventViewModel) { eventId ->
-                navController.navigate(Screen.EventDetails.createRoute(eventId))
-            }
+
+        composable(Screen.BottomNavScreen.Home.route) {
+            HomeScreen(
+                viewModel = eventViewModel,  // Matches first parameter
+                navController = navController  // Matches second parameter
+            )
         }
+
         composable(Screen.BottomNavScreen.Create.route) { // Fixed reference
             CreateEventScreen(viewModel = eventViewModel)
         }
+
 
         composable(Screen.BottomNavScreen.Settings.route) { // Fixed reference
             SettingsScreen(
@@ -86,6 +96,20 @@ fun NavigationHost(
                 eventId = backStackEntry.arguments?.getString("eventId") ?: ""
             )
         }
+
+        composable(
+            route = Screen.Attendance.route,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+            AttendanceScreen(
+                eventId = eventId,
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+
+
         composable("login") {
             LoginScreen(
                 loginViewModel = LoginViewModel(),   // provide the LoginViewModel here

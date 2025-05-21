@@ -10,8 +10,8 @@ import com.example.myapplication.screens.UserMyEvents
 import com.example.myapplication.screens.UserSettings
 import com.example.myapplication.screens.LatestEvents
 import com.example.myapplication.screens.UserPastEvents // Add this import
-import com.example.myapplication.UserViewModel
-import com.example.myapplication.EventViewModel
+import com.example.myapplication.viewmodels.UserViewModel
+import com.example.myapplication.viewmodels.EventViewModel
 
 @Composable
 fun UserNavigationHost(

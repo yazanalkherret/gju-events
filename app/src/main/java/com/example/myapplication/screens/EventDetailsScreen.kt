@@ -1,4 +1,3 @@
-// screens/EventDetailsScreen.kt
 package com.example.myapplication.screens
 
 import androidx.compose.foundation.layout.*
@@ -13,9 +12,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication.viewmodels.EventViewModel
 import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.ImageBitmap
+import com.example.myapplication.utils.decodeBase64ToImage
+import com.example.myapplication.components.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,22 +46,23 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
                 .fillMaxSize()
         ) {
             // Event Image
-            if (event != null) {
-                event.imageBase64?.let { base64 ->
-                    val mimeType = when {
-                        base64.startsWith("/9j") -> "jpeg"
-                        base64.startsWith("iVBORw0KGgo") -> "png"
-                        else -> "jpeg" // default
-                    }
-                    val imageUri = "data:image/$mimeType;base64,$base64"
+            event?.imageBase64?.let { base64 ->
+                val imageBitmap = decodeBase64ToImage(base64)
+                if (imageBitmap != null) {
                     Image(
-                        painter = rememberAsyncImagePainter(imageUri),
+                        bitmap = imageBitmap,
                         contentDescription = "Event Image",
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(250.dp)
                             .clip(MaterialTheme.shapes.large),
                         contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Text(
+                        "Failed to load image",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }
@@ -88,12 +90,12 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
                     // Date and Time
                     DetailItem(
                         label = "Date & Time",
-                        value = "${event?.date ?: ""} • ${event?.time ?: ""}" // Handle null cases
+                        value = "${event?.date ?: ""} • ${event?.time ?: ""}"
                     )
 
                     DetailItem(
                         label = "Room",
-                        value = event?.room ?: "" // Handle null case
+                        value = event?.room ?: ""
                     )
 
                     // Description
@@ -121,12 +123,11 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
                     horizontalArrangement = Arrangement.Start
                 ) {
                     FilledTonalButton(
-                        onClick = { /* Handle attendance */ },
-                        modifier = Modifier
-                            .width(190.dp),
-
-
-                        ) {
+                        onClick = {
+                            navController.navigate(Screen.Attendance.createRoute(eventId))
+                        },
+                        modifier = Modifier.width(190.dp)
+                    ) {
                         Text("Attendance")
                     }
 
@@ -144,12 +145,8 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
     }
 }
 
-// Update the DetailItem composable parameters
 @Composable
-private fun DetailItem(
-    label: String,  // Explicit type declaration
-    value: String   // Explicit type declaration
-) {
+private fun DetailItem(label: String, value: String) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),

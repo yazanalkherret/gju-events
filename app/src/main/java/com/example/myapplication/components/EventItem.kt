@@ -3,9 +3,11 @@ package com.example.myapplication.components
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Horizontal
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,11 +34,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.myapplication.utils.decodeBase64ToImage
 
 @Composable
 fun EventItem(
     event: Event,
-    onCardClick: () -> Unit = {})
+    onCardClick: () -> Unit = {},
+    onAttendanceClick: () -> Unit = {}
+)
 {
 
     Card(
@@ -63,22 +68,34 @@ fun EventItem(
                         // Left Column (Image + Date/Time)
                         Column(modifier = Modifier.width(100.dp)) {
                             event.imageBase64?.let { base64 ->
-                                val mimeType = when {
-                                    base64.startsWith("/9j") -> "jpeg"
-                                    base64.startsWith("iVBORw0KGgo") -> "png"
-                                    else -> "jpeg" // default
+                                val imageBitmap = decodeBase64ToImage(base64)
+                                if (imageBitmap != null) {
+                                    Image(
+                                        bitmap = imageBitmap,
+                                        contentDescription = "Event Image",
+                                        modifier = Modifier
+                                            .size(100.dp, 120.dp)
+                                            .clip(MaterialTheme.shapes.medium),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } else {
+                                    // Optional: Show a placeholder or error message
+                                    Box(
+                                        modifier = Modifier
+                                            .size(100.dp, 120.dp)
+                                            .clip(MaterialTheme.shapes.medium)
+                                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    ) {
+                                        Text(
+                                            text = "No Image",
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                    }
                                 }
-                                val imageUri = "data:image/$mimeType;base64,$base64"
-                                Image(
-                                    painter = rememberAsyncImagePainter(imageUri),
-                                    contentDescription = "Event Image",
-                                    modifier = Modifier
-                                        .size(100.dp, 120.dp)
-                                        .clip(MaterialTheme.shapes.medium),
-                                    contentScale = ContentScale.Crop
-                                )
                             }
+
                             Spacer(modifier = Modifier.height(8.dp))
+
                             Text(
                                 text = "${event.date} ${event.time}",
                                 style = MaterialTheme.typography.labelSmall,
@@ -131,7 +148,7 @@ fun EventItem(
                         horizontalArrangement = Arrangement.Start
                     ) {
                         FilledTonalButton(
-                            onClick = { /* Handle attendance */ },
+                            onClick = { onAttendanceClick() },
                             modifier = Modifier.requiredWidth(170.dp)
                         ) {
                             Text("Attendance")
