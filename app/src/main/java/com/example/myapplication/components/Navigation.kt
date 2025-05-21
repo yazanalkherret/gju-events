@@ -15,9 +15,12 @@ import com.example.myapplication.screens.CreateEventScreen
 import com.example.myapplication.screens.EventDetailsScreen
 import com.example.myapplication.screens.SettingsScreen
 import com.example.myapplication.screens.HomeScreen
-import com.example.myapplication.EventViewModel
-import com.example.myapplication.UserViewModel
+import com.example.myapplication.screens.LoginScreen
+import com.example.myapplication.viewmodels.EventViewModel
+import com.example.myapplication.viewmodels.UserViewModel
 import com.example.myapplication.screens.ManageAdminsScreen
+import com.example.myapplication.viewmodels.LoginViewModel
+
 // dsdsdsdsdsdsdsdsdsads
 sealed class Screen(
     val route: String,
@@ -81,6 +84,21 @@ fun NavigationHost(
                 navController = navController,
                 viewModel = eventViewModel,
                 eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+            )
+        }
+        composable("login") {
+            LoginScreen(
+                loginViewModel = LoginViewModel(),   // provide the LoginViewModel here
+                onNavigateToAdmin = {
+                    navController.navigate("manageAdmins") {
+                        popUpTo(0)
+                    }
+                },
+                onNavigateToHome = {
+                    navController.navigate("home") {
+                        popUpTo(0)
+                    }
+                }
             )
         }
     }

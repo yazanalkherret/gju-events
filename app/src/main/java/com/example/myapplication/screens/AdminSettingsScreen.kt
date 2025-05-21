@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.myapplication.UserViewModel
+import com.example.myapplication.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.example.myapplication.components.Screen
 

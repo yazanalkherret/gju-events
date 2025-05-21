@@ -15,24 +15,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
+
         <activity
-            android:name=".AdminActivity"
+            android:name=".activities.Admin_Activity"
             android:exported="false" />
         <activity
             android:name=".XMLScreens.HomePage"
             android:exported="false" />
         <activity
-            android:name=".XMLScreens.Forgot_pass_Activity"
+            android:name=".activities.Forgot_pass_Activity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.Signup_Activity"
             android:exported="false" />
         <activity
-            android:name=".verficationpage"
-            android:exported="false" />
-        <activity
-            android:name=".XMLScreens.Signup_Activity"
-            android:exported="false" />
-        <activity
-            android:name=".XMLScreens.MainActivity"
-            android:exported="true">
+            android:name=".activities.Login_Activity"
+            android:exported="true" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -14,7 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.EventViewModel
+import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.components.EventItem
 
 @Composable

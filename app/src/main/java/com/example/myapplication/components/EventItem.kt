@@ -36,7 +36,7 @@ import coil.compose.rememberAsyncImagePainter
 @Composable
 fun EventItem(
     event: Event,
-    onCardClick: () -> Unit)
+    onCardClick: () -> Unit = {})
 {
 
     Card(
