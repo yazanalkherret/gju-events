@@ -20,7 +20,8 @@
             android:name=".activities.Admin_Activity"
             android:exported="false" />
         <activity
-            android:name=".XMLScreens.HomePage"
+            android:name=".utils.UserActivity"
+            android:label="User Dashboard"
             android:exported="false" />
         <activity
             android:name=".activities.Forgot_pass_Activity"
