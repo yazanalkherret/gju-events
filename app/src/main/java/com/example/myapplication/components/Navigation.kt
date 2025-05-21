@@ -21,16 +21,16 @@ import com.example.myapplication.viewmodels.UserViewModel
 import com.example.myapplication.screens.ManageAdminsScreen
 import com.example.myapplication.viewmodels.LoginViewModel
 
-// dsdsdsdsdsdsdsdsdsads
+
 sealed class Screen(
     val route: String,
     val title: String
 ) {
-    // For screens with icons (Bottom Navigation)
+
     sealed class BottomNavScreen(
         route: String,
         title: String,
-        val icon: ImageVector  // Non-null icon
+        val icon: ImageVector
     ) : Screen(route, title) {
         object Home : BottomNavScreen("home", "Home", Icons.Default.Home)
         object Create : BottomNavScreen("create", "Create", Icons.Default.Add)
@@ -38,7 +38,7 @@ sealed class Screen(
 
     }
 
-    // For screens without icons
+
     object EventDetails : Screen("eventDetails/{eventId}", "Event Details") {
         fun createRoute(eventId: String) = "eventDetails/$eventId" // Changed to String
     }
