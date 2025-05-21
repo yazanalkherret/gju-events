@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.myapplication.AdminActivity
 import com.example.myapplication.R
+import com.example.myapplication.utils.UserActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -84,9 +85,9 @@ class MainActivity : AppCompatActivity() {
                                             finish()
                                         } else {
 
-                                            val intent = Intent(this, HomePage::class.java)
+                                            val intent = Intent(this, UserActivity::class.java)
                                             startActivity(intent)
-                                            finish()
+                                            //finish()
                                         }
 
                                     } else {
