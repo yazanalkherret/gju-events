@@ -15,10 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.myapplication.viewmodels.EventViewModel
-import com.example.myapplication.components.EventItem
+import com.example.myapplication.components.EventItemUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun UserHomePage(navController: NavHostController, viewModel: EventViewModel) {
+    val auth = Firebase.auth
     val events by viewModel.events.collectAsState()
 
     Column(
@@ -52,8 +55,11 @@ fun UserHomePage(navController: NavHostController, viewModel: EventViewModel) {
         } else {
             LazyColumn {
                 items(items = events.takeLast(3).reversed()) { event ->
-                    EventItem(event = event,
-                    onCardClick = {}
+                    EventItemUser(
+                        event = event,
+                        viewModel = viewModel,
+                        onEnrollClick = { viewModel.enrollToEvent(event.title) },
+                        onCardClick = { navController.navigate("event_details/${event.title}") }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
