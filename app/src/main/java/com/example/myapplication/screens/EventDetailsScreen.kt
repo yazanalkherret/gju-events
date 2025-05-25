@@ -134,7 +134,9 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
                     Spacer(modifier = Modifier.width(16.dp))
 
                     OutlinedButton(
-                        onClick = { /* Handle modify */ },
+                        onClick = {
+                            println("Attempting to navigate to modify event: $eventId")
+                            navController.navigate(Screen.ModifyEvent.createRoute(eventId))  },
                         modifier = Modifier.width(190.dp)
                     ) {
                         Text("Modify")

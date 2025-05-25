@@ -33,12 +33,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication.utils.decodeBase64ToImage
 
 @Composable
 fun EventItem(
     event: Event,
+    navController: NavController,
     onCardClick: () -> Unit = {},
     onAttendanceClick: () -> Unit = {}
 )
@@ -157,7 +159,7 @@ fun EventItem(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         OutlinedButton(
-                            onClick = { /* Handle modify */ },
+                            onClick = { navController.navigate(Screen.ModifyEvent.createRoute(event.id)) },
                             modifier = Modifier.requiredWidth(170.dp)
                         ) {
                             Text("Modify")

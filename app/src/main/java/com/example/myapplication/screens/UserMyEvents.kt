@@ -14,11 +14,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.components.EventItem
 
 @Composable
-fun UserMyEvents(viewModel: EventViewModel) {
+fun UserMyEvents(
+    viewModel: EventViewModel,
+    navController: NavController
+) {
     // Correct way to observe StateFlow
     val events by viewModel.events.collectAsState()
 
@@ -36,6 +40,7 @@ fun UserMyEvents(viewModel: EventViewModel) {
             LazyColumn {
                 items(items = events.takeLast(3).reversed()) { event ->
                     EventItem(event = event,
+                        navController = navController,
                         onCardClick = {}
                     )
                     Spacer(modifier = Modifier.height(8.dp))

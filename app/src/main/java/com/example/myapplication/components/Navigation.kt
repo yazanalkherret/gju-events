@@ -20,6 +20,7 @@ import com.example.myapplication.screens.LoginScreen
 import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.viewmodels.UserViewModel
 import com.example.myapplication.screens.ManageAdminsScreen
+import com.example.myapplication.screens.ModifyEventScreen
 import com.example.myapplication.viewmodels.LoginViewModel
 
 
@@ -47,7 +48,9 @@ sealed class Screen(
         fun createRoute(eventId: String) = "eventDetails/$eventId" // Changed to String
     }
 
-
+    object ModifyEvent : Screen("modifyEvent/{eventId}", "Edit Event") {
+        fun createRoute(eventId: String) = "modifyEvent/$eventId"
+    }
 
     object ManageAdmins : Screen("manageAdmins", "Manage Admins")
 }
@@ -66,12 +69,21 @@ fun NavigationHost(
         composable(Screen.BottomNavScreen.Home.route) {
             HomeScreen(
                 viewModel = eventViewModel,  // Matches first parameter
-                navController = navController  // Matches second parameter
+                navController = navController,
+                onEventClick = { /* ... */ }// Matches second parameter
             )
         }
 
         composable(Screen.BottomNavScreen.Create.route) { // Fixed reference
             CreateEventScreen(viewModel = eventViewModel)
+        }
+
+        composable(
+            route = Screen.ModifyEvent.route,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+            ModifyEventScreen(viewModel = eventViewModel,navController = navController, eventId = eventId)
         }
 
 

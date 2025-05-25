@@ -43,6 +43,7 @@ fun HomeScreen(
                 items(items = events.takeLast(3).reversed()) { event ->
                     EventItem(
                         event = event,
+                        navController = navController,
                         onCardClick = {
                             navController.navigate(Screen.EventDetails.createRoute(event.id))
                         },

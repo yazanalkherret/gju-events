@@ -28,9 +28,30 @@ class EventViewModel() : ViewModel() {
     val events: StateFlow<List<Event>> = _events.asStateFlow()
     private val _enrollments = MutableStateFlow<List<Enrollment>>(emptyList())
     val enrollments: StateFlow<List<Enrollment>> = _enrollments.asStateFlow()
+
     fun getEventById(eventId: String): Event? {
         return _events.value.find { it.id == eventId }
     }
+
+    fun updateEvent(
+        event: Event,
+        onSuccess: () -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                db.collection("events")
+                    .document(event.id)
+                    .set(event)
+                    .await()
+                onSuccess()
+            } catch (e: Exception) {
+                onError(e)
+            }
+        }
+    }
+
+
 
     private val _currentUser = MutableStateFlow(
         User(

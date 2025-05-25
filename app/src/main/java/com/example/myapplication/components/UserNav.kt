@@ -32,7 +32,10 @@ fun UserNavigationHost(
             )
         }
         composable("user_my_events") {
-            UserMyEvents(viewModel = eventViewModel)
+            UserMyEvents(
+                viewModel = eventViewModel,
+                navController = navController
+            )
         }
         composable("user_settings") {
             UserSettings(
