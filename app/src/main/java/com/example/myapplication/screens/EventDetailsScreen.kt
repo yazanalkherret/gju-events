@@ -1,28 +1,31 @@
 package com.example.myapplication.screens
 
+import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.myapplication.viewmodels.EventViewModel
-import androidx.compose.foundation.Image
-import androidx.compose.ui.graphics.ImageBitmap
-import com.example.myapplication.utils.decodeBase64ToImage
 import com.example.myapplication.components.Screen
+import com.example.myapplication.utils.decodeBase64ToImage
+import com.example.myapplication.viewmodels.EventViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, eventId: String) {
-    // Fetch event details from ViewModel
     val event = viewModel.getEventById(eventId)
+    val context = LocalContext.current
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -116,33 +119,92 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
 
                 // Buttons at bottom
                 Spacer(modifier = Modifier.weight(1f))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp),
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    FilledTonalButton(
-                        onClick = {
-                            navController.navigate(Screen.Attendance.createRoute(eventId))
-                        },
-                        modifier = Modifier.width(190.dp)
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 24.dp),
+                        horizontalArrangement = Arrangement.Start
                     ) {
-                        Text("Attendance")
+                        FilledTonalButton(
+                            onClick = { navController.navigate(Screen.Attendance.createRoute(eventId)) },
+                            modifier = Modifier.width(190.dp)
+                        ) {
+                            Text("Attendance")
+                        }
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        OutlinedButton(
+                            onClick = { navController.navigate(Screen.ModifyEvent.createRoute(eventId)) },
+                            modifier = Modifier.width(190.dp)
+                        ) {
+                            Text("Modify")
+                        }
                     }
 
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    OutlinedButton(
-                        onClick = {
-                            println("Attempting to navigate to modify event: $eventId")
-                            navController.navigate(Screen.ModifyEvent.createRoute(eventId))  },
+                    // Delete Button
+                    Row(
                         modifier = Modifier.width(190.dp)
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, bottom = 24.dp),
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Text("Modify")
+                        FilledTonalButton(
+                            onClick = { showDeleteDialog = true },
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                                contentColor = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        ) {
+                            Text("Delete Event")
+                        }
                     }
                 }
             }
+        }
+
+        // Delete Confirmation Dialog
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text("Delete Event") },
+                text = { Text("Are you sure you want to delete this event?") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDeleteDialog = false
+                            viewModel.deleteEvent(
+                                eventId = eventId,
+                                onSuccess = {
+                                    navController.popBackStack()
+                                    Toast.makeText(
+                                        context,
+                                        "Event deleted successfully",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                },
+                                onError = { e ->
+                                    Toast.makeText(
+                                        context,
+                                        "Delete failed: ${e.message}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            )
+                        }
+                    ) {
+                        Text("Delete")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showDeleteDialog = false }
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            )
         }
     }
 }

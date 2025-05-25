@@ -143,6 +143,26 @@ class EventViewModel() : ViewModel() {
                 }
             }
     }
+
+    fun deleteEvent(
+        eventId: String,
+        onSuccess: () -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        // Get reference to Firestore collection
+        val db = FirebaseFirestore.getInstance()
+        db.collection("events").document(eventId)
+            .delete()
+            .addOnSuccessListener {
+                // Remove from local list if needed
+                _events.value = _events.value.filter { it.id != eventId }
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                onError(e)
+            }
+    }
+
     fun logout() {
         viewModelScope.launch {
             // Add actual logout logic here
