@@ -1,5 +1,6 @@
 package com.example.myapplication.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.components.Enrollment
@@ -32,6 +33,9 @@ class EventViewModel() : ViewModel() {
     fun getEventById(eventId: String): Event? {
         return _events.value.find { it.id == eventId }
     }
+    fun getEventByTitle(title: String): Event? {
+        return _events.value.find { it.title == title }
+    }
 
     fun updateEvent(
         event: Event,
@@ -50,6 +54,8 @@ class EventViewModel() : ViewModel() {
             }
         }
     }
+    private val _enrolledEvents = MutableStateFlow<List<Event>>(emptyList())
+    val enrolledEvents: StateFlow<List<Event>> = _enrolledEvents.asStateFlow()
 
 
 
@@ -66,6 +72,7 @@ class EventViewModel() : ViewModel() {
     init {
         fetchEventsRealTime() // Start listening for data changes
         loadEnrollments()
+        loadEnrolledEvents()
     }
     private fun fetchEventsRealTime() {
         db.collection("events")
@@ -102,24 +109,19 @@ class EventViewModel() : ViewModel() {
     fun enrollToEvent(eventTitle: String) {
         viewModelScope.launch {
             val userEmail = currentUser.value.email
-            val docId = "$eventTitle ${userEmail}"
+            // Remove space between title and email
+            val docId = "$eventTitle$userEmail" // Fixed
 
-            // Use Firestore's server timestamp
             val enrollmentData = hashMapOf(
                 "userEmail" to userEmail,
                 "eventTitle" to eventTitle,
                 "timestamp" to FieldValue.serverTimestamp()
             )
 
-            db.collection("enrollments")
-                .document(docId)
+            db.collection("enrollments").document(docId)
                 .set(enrollmentData)
                 .addOnSuccessListener {
-                    _enrollments.value += Enrollment(
-                        userEmail = userEmail,
-                        eventTitle = eventTitle,
-                        timestamp = Timestamp.now()
-                    )
+                    loadEnrollments()
                 }
         }
     }
@@ -140,6 +142,26 @@ class EventViewModel() : ViewModel() {
                     it.toObject(Enrollment::class.java)
                 }?.let { enrollmentsList ->
                     _enrollments.value = enrollmentsList
+                }
+            }
+    }
+    private fun loadEnrolledEvents() {
+        val userEmail = currentUser.value.email
+        db.collection("enrollments")
+            .whereEqualTo("userEmail", userEmail)
+            .addSnapshotListener { enrollSnap, _ ->
+                val enrolledTitles = enrollSnap?.documents?.mapNotNull {
+                    it.getString("eventTitle")
+                } ?: emptyList()
+
+                if (enrolledTitles.isNotEmpty()) {
+                    db.collection("events")
+                        .whereIn("title", enrolledTitles)
+                        .addSnapshotListener { eventSnap, _ ->
+                            _enrolledEvents.value = eventSnap?.toObjects(Event::class.java) ?: emptyList()
+                        }
+                } else {
+                    _enrolledEvents.value = emptyList()
                 }
             }
     }
@@ -167,6 +189,30 @@ class EventViewModel() : ViewModel() {
         viewModelScope.launch {
             // Add actual logout logic here
             _currentUser.value = User() // Reset user
+        }
+    }
+    fun unenrollFromEvent(
+        eventTitle: String,
+        onSuccess: () -> Unit = {}
+    ) {
+        viewModelScope.launch {
+            val userEmail = currentUser.value.email
+            // Must match EXACTLY with enrollment ID format
+            val docId = "$eventTitle${userEmail}"
+
+            Log.d("Unenroll", "Attempting to delete: $docId") // Add this
+
+            db.collection("enrollments").document(docId)
+                .delete()
+                .addOnSuccessListener {
+                    Log.d("Unenroll", "Successfully deleted: $docId")
+                    loadEnrollments()
+                    loadEnrolledEvents()
+                    onSuccess() // Trigger callback
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Unenroll", "Failed to delete $docId", e)
+                }
         }
     }
 }

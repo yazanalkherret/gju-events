@@ -23,6 +23,7 @@ import com.google.firebase.ktx.Firebase
 fun UserHomePage(navController: NavHostController, viewModel: EventViewModel) {
     val auth = Firebase.auth
     val events by viewModel.events.collectAsState()
+    val enrollments by viewModel.enrollments.collectAsState()
 
     Column(
         modifier = Modifier
@@ -38,14 +39,7 @@ fun UserHomePage(navController: NavHostController, viewModel: EventViewModel) {
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(end = 8.dp)
             )
-            Icon(
-                imageVector = Icons.Default.ArrowForward,
-                contentDescription = "View all events",
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable { navController.navigate("latest_events") },
-                tint = MaterialTheme.colorScheme.primary
-            )
+
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -55,11 +49,23 @@ fun UserHomePage(navController: NavHostController, viewModel: EventViewModel) {
         } else {
             LazyColumn {
                 items(items = events.takeLast(3).reversed()) { event ->
+                    val isEnrolled = viewModel.isUserEnrolled(event.title)
+
                     EventItemUser(
                         event = event,
-                        viewModel = viewModel,
-                        onEnrollClick = { viewModel.enrollToEvent(event.title) },
-                        onCardClick = { navController.navigate("event_details/${event.title}") }
+                        onEnrollClick = {
+                            val newEnrollmentState = !isEnrolled
+                            // Immediate UI update
+                            if (newEnrollmentState) {
+                                viewModel.enrollToEvent(event.title)
+                            } else {
+                                viewModel.unenrollFromEvent(event.title)
+                            }
+                        },
+                        onCardClick = {
+                            navController.navigate("user_event_details/${event.title}") // Pass title
+                        },
+                        isEnrolled = isEnrolled
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }

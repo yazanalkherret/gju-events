@@ -14,17 +14,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.components.EventItem
+import com.example.myapplication.components.EventItemUser
 
 @Composable
-fun UserMyEvents(
-    viewModel: EventViewModel,
-    navController: NavController
-) {
-    // Correct way to observe StateFlow
-    val events by viewModel.events.collectAsState()
+fun UserMyEvents(navController: NavHostController, viewModel: EventViewModel) {
+    val enrolledEvents by viewModel.enrolledEvents.collectAsState()
 
     Column(
         modifier = Modifier
@@ -34,14 +31,17 @@ fun UserMyEvents(
         Text("My Registered Events", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (events.isEmpty()) {
+        if (enrolledEvents.isEmpty()) {
             Text("No events found")
         } else {
             LazyColumn {
-                items(items = events.takeLast(3).reversed()) { event ->
-                    EventItem(event = event,
-                        navController = navController,
-                        onCardClick = {}
+                items(items = enrolledEvents) { event ->
+                    EventItemUser(
+                        event = event,
+                        onEnrollClick = { viewModel.unenrollFromEvent(event.title) },
+                        onCardClick = { navController.navigate("user_event_details/${event.title}") },
+                        isEnrolled = true
+                        //viewModel = EventViewModel()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }

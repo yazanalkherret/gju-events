@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -29,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,19 +42,18 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication.utils.decodeBase64ToImage
 import com.example.myapplication.viewmodels.EventViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun EventItemUser(
     event: Event,
-    viewModel: EventViewModel,
     onEnrollClick: () -> Unit,
-    onCardClick: () -> Unit
+    onCardClick: () -> Unit,
+    isEnrolled: Boolean
 ) {
-    val enrollmentsState = viewModel.enrollments.collectAsState()
-    val isEnrolled = remember(enrollmentsState.value) {
-        derivedStateOf { viewModel.isUserEnrolled(event.title) }
-    }.value
 
+    var localEnrolled by remember { mutableStateOf(isEnrolled) }
 
     Card(
         modifier = Modifier
@@ -150,24 +152,28 @@ fun EventItemUser(
             }
 
             // Buttons Row
-            Row(
+            Button(
+                onClick = {
+                    localEnrolled = !localEnrolled // Immediate toggle
+                    onEnrollClick()
+                },
+                enabled = true,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (localEnrolled) MaterialTheme.colorScheme.error
+                    else MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = if (localEnrolled) MaterialTheme.colorScheme.onError
+                    else MaterialTheme.colorScheme.onPrimaryContainer
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.Start
+                    .padding(top = 16.dp)
             ) {
-                FilledTonalButton(
-                    onClick = { onEnrollClick() },
-                   enabled = !isEnrolled,
-                    modifier = Modifier.requiredWidth(348.dp)
-                ) {
-                   Text(if (isEnrolled) "Enrolled" else "Enroll Now")
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-
+                Text(if (localEnrolled) "Unenroll" else "Enroll Now")
             }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+
         }
     }
 }

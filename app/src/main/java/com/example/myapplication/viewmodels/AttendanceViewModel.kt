@@ -20,7 +20,7 @@ data class Student(
 )
 
 class AttendanceViewModel : ViewModel() {
-    private val db = Firebase.firestore  // Initialize Firestore
+    private val db = Firebase.firestore  // Initialize
     private var eventId: String = ""  // Add eventId storage
     private var enrollmentListener: ListenerRegistration? = null  // Add listener reference
     private var eventListener: ListenerRegistration? = null
@@ -48,7 +48,7 @@ class AttendanceViewModel : ViewModel() {
                 }
             }
     }
-    // New Firestore sync for attendance
+    // New  sync for attendance
     private fun fetchAttendedStudents() {
         eventListener = db.collection("events").document(eventId)
             .addSnapshotListener { snapshot, _ ->
@@ -56,7 +56,7 @@ class AttendanceViewModel : ViewModel() {
                 _attendedStudents.value = attended.toSet() // Update StateFlow
             }
     }
-    // New Firestore update
+    // New  update
     fun toggleAttendance(studentEmail: String, isPresent: Boolean) {
         db.collection("events").document(eventId)
             .update("attendedStudents", if (isPresent) {
