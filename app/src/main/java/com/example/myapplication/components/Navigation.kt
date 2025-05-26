@@ -53,6 +53,9 @@ sealed class Screen(
     }
 
     object ManageAdmins : Screen("manageAdmins", "Manage Admins")
+
+    object AdminPastEvents : Screen("admin_past_events", "Past Events")
+
 }
 
 @Composable
@@ -137,5 +140,12 @@ fun NavigationHost(
                 }
             )
         }
+        composable(Screen.AdminPastEvents.route) {
+            com.example.myapplication.screens.AdminPastEvents(
+                navController = navController,
+                viewModel = eventViewModel
+            )
+        }
+
     }
 }

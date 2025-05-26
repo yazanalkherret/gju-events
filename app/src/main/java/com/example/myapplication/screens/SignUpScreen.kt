@@ -24,9 +24,9 @@ import com.example.myapplication.viewmodels.SignupViewModel
 fun SignupScreen(signupViewModel: SignupViewModel,
                  onNavigateToLogin: (String) -> Unit,
 
-) {
+                 ) {
 
-
+    var fullName by remember {mutableStateOf("")}
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -53,18 +53,26 @@ fun SignupScreen(signupViewModel: SignupViewModel,
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 32.dp),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Image(
             painter = painterResource(id = R.drawable.account),
             contentDescription = "Account Icon",
             modifier = Modifier
-                .size(width = 133.dp, height = 127.dp)
-                .padding(bottom = 16.dp)
+                .size(width = 133.dp, height = 133.dp)
+        )
+        TextField(
+            value = fullName,
+            onValueChange = { fullName = it },
+            label = { Text("Full Name") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
         )
 
-        Spacer(modifier = Modifier.height(50.dp))
 
         TextField(
             value = email,
@@ -77,7 +85,6 @@ fun SignupScreen(signupViewModel: SignupViewModel,
                 .height(56.dp)
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
 
         TextField(
             value = password,
@@ -88,10 +95,9 @@ fun SignupScreen(signupViewModel: SignupViewModel,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(66.dp)
+                .height(56.dp)
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
 
         TextField(
             value = confirmPassword,
@@ -102,10 +108,8 @@ fun SignupScreen(signupViewModel: SignupViewModel,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(66.dp)
+                .height(56.dp)
         )
-
-        Spacer(modifier = Modifier.height(20.dp))
 
         TextField(
             value = major,
@@ -118,17 +122,13 @@ fun SignupScreen(signupViewModel: SignupViewModel,
                 .height(56.dp)
         )
 
-        Spacer(modifier = Modifier.height(90.dp))
-
         Button(
             onClick = {
-                        signupViewModel.createAccount(email , password , confirmPassword , major)
-                      },
+                signupViewModel.createAccount(fullName, email , password , confirmPassword , major)
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
-
-                .padding(top = 32.dp)
+                .height(48.dp)
         ) {
             Text("Create Account")
         }
@@ -136,7 +136,6 @@ fun SignupScreen(signupViewModel: SignupViewModel,
         Text(
             text = "Already Have An Account?",
             modifier = Modifier
-                .padding(top = 16.dp)
                 .clickable() { onNavigateToLogin(email) },
             color = MaterialTheme.colorScheme.primary
         )

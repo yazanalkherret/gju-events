@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 
 data class UserData(
     val id: String = "",
+    val fullName: String = "",
     val email: String = "",
     val role: String = "user",
     val certificate: Int = 0
@@ -26,7 +27,6 @@ class UserViewModel : ViewModel() {
     init {
         loadUserData()
     }
-
     private fun loadUserData() {
         viewModelScope.launch {
             auth.currentUser?.email?.let { email ->

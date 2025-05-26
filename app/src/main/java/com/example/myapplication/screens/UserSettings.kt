@@ -25,12 +25,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -41,6 +44,7 @@ import com.example.myapplication.viewmodels.UserViewModel
 @Composable
 fun UserSettings(navController: NavHostController,
                  userViewModel: UserViewModel) {
+    val userData by userViewModel.userData.collectAsState()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -74,13 +78,13 @@ fun UserSettings(navController: NavHostController,
                         verticalArrangement = Arrangement.Center  // Better vertical alignment
                     ) {
                         Text(
-                            text = "Guest User",
+                            text = userData?.fullName ?: "Loading...",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(12.dp))  // Increased spacing
                         Text(
-                            text = "guest@example.com",
+                            text = userData?.email ?: "Loading...",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

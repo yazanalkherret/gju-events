@@ -43,7 +43,7 @@ fun LoginScreen(
     onNavigateToAdmin: () -> Unit,
     onNavigateToHome: () -> Unit
 
-    ){
+){
     val loginSuccessRole by loginViewModel.loginSuccessRole.collectAsState()
     val message by loginViewModel.message.collectAsState()
 
@@ -76,20 +76,16 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 32.dp),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Image(
             painter = painterResource(id = R.drawable.account),
             contentDescription = "Account Icon",
             modifier = Modifier
-                .size(width = 133.dp, height = 127.dp)
-                .padding(bottom = 16.dp)
-
+                .size(width = 133.dp, height = 133.dp)
 
         )
-
-        Spacer(modifier = Modifier.height(180.dp))
 
         TextField(
             value = login_email,
@@ -102,7 +98,6 @@ fun LoginScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
 
         TextField(
             value = login_password,
@@ -112,8 +107,7 @@ fun LoginScreen(
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(66.dp)
-                .padding(top = 16.dp),
+                .height(56.dp),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
 
@@ -128,13 +122,12 @@ fun LoginScreen(
 
 
             }
-            )
+        )
 
         Text(
             text = "Forgot Password",
             modifier = Modifier
                 .align(Alignment.End)
-                .padding(top = 8.dp, bottom = 8.dp)
                 .clickable() {
                     val intent = Intent(context, Forgot_pass_Activity::class.java)
                     context.startActivity(intent)
@@ -143,31 +136,24 @@ fun LoginScreen(
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
         )
-        Row (
+        Button(
+            onClick = {
+                loginViewModel.login(login_email, login_password)
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .height(48.dp)
         ){
-            Button(
-                onClick = {
-                    val intent = Intent(context, Signup_Activity::class.java)
-                    context.startActivity(intent)
-                          },
-                modifier = Modifier.weight(1f).height(49.dp),
-            ){
-                Text("Sign Up")
-
-                }
-            Spacer(modifier = Modifier.width(16.dp))
-            Button(
-                onClick = {
-                    loginViewModel.login(login_email, login_password)
-                },
-                modifier = Modifier.weight(1f).height(49.dp)
-            ){
-                Text("Login")
-            }
+            Text("Login")
         }
+
+        Text(
+            text = "Don't have an account? Sign Up",
+            modifier = Modifier
+                .clickable() { val intent = Intent(context, Signup_Activity::class.java)
+                    context.startActivity(intent) },
+            color = MaterialTheme.colorScheme.primary
+        )
+
     }
 }

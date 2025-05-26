@@ -72,12 +72,12 @@ fun SettingsScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = userData?.email ?: "Loading...",
+                        text = userData?.fullName ?: "Loading...",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Role: ${userData?.role?.replaceFirstChar { it.uppercase() } ?: "User"}",
+                        text = userData?.email ?: "Loading...",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -110,7 +110,7 @@ fun SettingsScreen(
             SettingsButton(
                 icon = Icons.Filled.Lock,
                 text = "Past Events",
-                onClick = {}
+                onClick = {navController.navigate(Screen.AdminPastEvents.route)}
             )
         }
     }

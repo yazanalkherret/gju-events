@@ -250,7 +250,7 @@ fun CreateEventScreen(viewModel: EventViewModel) {
                 }
 
                 val newEvent = Event(
-                    //id = viewModel.events.value.size + 1,
+                    id = (viewModel.events.value.size + 1).toString(),
                     title = title,
                     room = room,
                     date = dateFormatter.format(calendar.time),
@@ -320,6 +320,6 @@ private fun DatePickerState.reset() {
 }
 
 private fun TimePickerState.reset() {
-   // this.hour = LocalTime.now().hour
-   // this.minute = LocalTime.now().minute
+    // this.hour = LocalTime.now().hour
+    // this.minute = LocalTime.now().minute
 }

@@ -16,7 +16,11 @@ class SignupViewModel : ViewModel() {
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message
 
-    fun createAccount(email: String, password: String, confirmPassword: String, major: String){
+    fun createAccount(fullName: String, email: String, password: String, confirmPassword: String, major: String){
+        if (fullName.isEmpty()) {
+            _message.value = "Please enter your full name"
+            return
+        }
         if (email.isEmpty()) {
             _message.value = "Please enter your Email"
             return
@@ -46,6 +50,7 @@ class SignupViewModel : ViewModel() {
 
                                 val safeEmail = email.replace(".", "_")
                                 val userInfo = hashMapOf(
+                                    "fullName" to fullName,
                                     "email" to email,
                                     "role" to "user",
                                     "certificate" to 1

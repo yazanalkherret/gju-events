@@ -99,7 +99,7 @@ class EventViewModel() : ViewModel() {
                     .replace(Regex("[^a-z0-9_]"), "")
 
                 val docRef = db.collection("events").document(sanitizedTitle)
-                docRef.set(event.copy(id = sanitizedTitle)).await()
+                docRef.set(event.copy(id = event.id)).await()
                 onSuccess()
             } catch (e: Exception) {
                 onError(e)
