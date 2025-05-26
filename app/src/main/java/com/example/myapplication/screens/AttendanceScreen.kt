@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myproject.viewmodel.AttendanceViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -22,14 +23,19 @@ fun AttendanceScreen(
 ) {
     var searchText by remember { mutableStateOf("") }
     val students = viewModel.students
+    val attendedStudents by viewModel.attendedStudents.collectAsState()
+    val event by viewModel.event.collectAsState()
     val checkStates = remember {
         mutableStateMapOf<String, Boolean>().apply {
-            students.forEach { this[it.name] = true }
+            students.forEach { this[it.email] = true }
         }
+    }
+    LaunchedEffect(eventId) {
+        viewModel.initialize(eventId) // Call on the instance // Initialize with event ID
     }
 
     val filteredStudents = students.filter {
-        it.name.contains(searchText, ignoreCase = true)
+        it.email.contains(searchText, ignoreCase = true)
     }
 
     Scaffold(
@@ -51,8 +57,8 @@ fun AttendanceScreen(
         bottomBar = {
             OutlinedButton(
                 onClick = {
-                    students.forEach { student ->
-                        checkStates[student.name] = true
+                    viewModel.students.forEach { student ->
+                        viewModel.toggleAttendance(student.email, true)
                     }
                 },
                 modifier = Modifier
@@ -79,9 +85,9 @@ fun AttendanceScreen(
                         contentDescription = null,
                         modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("08/05 Friday 3:00 PM", fontSize = 12.sp)
+                    Text("${event?.date} ${event?.time}", fontSize = 12.sp)
                 }
-                Text("E007", fontSize = 12.sp)
+                Text("${event?.room}", fontSize = 12.sp)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -106,10 +112,12 @@ fun AttendanceScreen(
                             .padding(vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(student.name)
+                        Text(student.email)
                         Checkbox(
-                            checked = checkStates[student.name] ?: false,
-                            onCheckedChange = { checkStates[student.name] = it }
+                            checked = attendedStudents.contains(student.email),
+                            onCheckedChange = { isChecked ->
+                                viewModel.toggleAttendance(student.email, isChecked)
+                            }
                         )
                     }
                 }
