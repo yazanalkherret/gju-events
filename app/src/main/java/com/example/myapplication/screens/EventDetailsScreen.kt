@@ -145,13 +145,14 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
 
                     // Delete Button
                     Row(
-                        modifier = Modifier.width(190.dp)
+                        modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp, bottom = 24.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         FilledTonalButton(
                             onClick = { showDeleteDialog = true },
+                            modifier = Modifier.width(190.dp), // Match width of other buttons
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = MaterialTheme.colorScheme.errorContainer,
                                 contentColor = MaterialTheme.colorScheme.onErrorContainer
