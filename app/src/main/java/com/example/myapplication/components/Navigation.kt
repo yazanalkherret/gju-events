@@ -21,6 +21,7 @@ import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.viewmodels.UserViewModel
 import com.example.myapplication.screens.ManageAdminsScreen
 import com.example.myapplication.screens.ModifyEventScreen
+import com.example.myapplication.screens.PastEventsScreen
 import com.example.myapplication.viewmodels.LoginViewModel
 
 
@@ -55,6 +56,8 @@ sealed class Screen(
     object ManageAdmins : Screen("manageAdmins", "Manage Admins")
 
     object AdminPastEvents : Screen("admin_past_events", "Past Events")
+
+    object PastEventsScreen : Screen("past_events_screen", "Finished Events")
 
 }
 
@@ -146,6 +149,13 @@ fun NavigationHost(
                 viewModel = eventViewModel
             )
         }
+        composable(Screen.PastEventsScreen.route) {
+            PastEventsScreen(
+                navController = navController,
+                viewModel = eventViewModel
+            )
+        }
+
 
     }
 }

@@ -249,8 +249,12 @@ fun CreateEventScreen(viewModel: EventViewModel) {
                     set(Calendar.MINUTE, timePickerState.minute)
                 }
 
+                // Generate the event ID using the selected date/time (or fallback to current time)
+                val eventId = calendar.timeInMillis.toString()
+
+
                 val newEvent = Event(
-                    id = (viewModel.events.value.size + 1).toString(),
+                    id = eventId,
                     title = title,
                     room = room,
                     date = dateFormatter.format(calendar.time),

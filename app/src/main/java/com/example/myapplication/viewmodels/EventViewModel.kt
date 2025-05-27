@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class User(
     val id: String = "",
@@ -93,28 +96,26 @@ class EventViewModel() : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                val sanitizedTitle = event.title
-                    .lowercase()
-                    .replace(" ", "")
-                    .replace(Regex("[^a-z0-9_]"), "")
-
-                val docRef = db.collection("events").document(sanitizedTitle)
-                docRef.set(event.copy(id = event.id)).await()
+                // Use the event's ID as the Firestore document ID
+                db.collection("events")
+                    .document(event.id)
+                    .set(event)
+                    .await()
                 onSuccess()
             } catch (e: Exception) {
                 onError(e)
             }
         }
     }
-    fun enrollToEvent(eventTitle: String) {
+    fun enrollToEvent(eventId: String) {
         viewModelScope.launch {
             val userEmail = currentUser.value.email
             // Remove space between title and email
-            val docId = "$eventTitle$userEmail" // Fixed
+            val docId = "$eventId$userEmail" // Fixed
 
             val enrollmentData = hashMapOf(
                 "userEmail" to userEmail,
-                "eventTitle" to eventTitle,
+                "eventId" to eventId,
                 "timestamp" to FieldValue.serverTimestamp()
             )
 
@@ -214,5 +215,14 @@ class EventViewModel() : ViewModel() {
                     Log.e("Unenroll", "Failed to delete $docId", e)
                 }
         }
+    }
+}
+fun isEventInPast(dateString: String, timeString: String): Boolean {
+    return try {
+        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        val fullDateTime = formatter.parse("$dateString $timeString")
+        fullDateTime?.before(Date()) ?: false
+    } catch (e: Exception) {
+        false
     }
 }

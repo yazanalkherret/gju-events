@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.myapplication.components.Screen
 import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.viewmodels.UserViewModel
 
@@ -95,10 +96,10 @@ fun UserSettings(navController: NavHostController,
             Spacer(modifier = Modifier.height(24.dp))
 
             // Settings Options
-            UserSettingsButton(
+            SettingsButton(
                 icon = Icons.Filled.Lock,
                 text = "Past Events",
-                onClick = { navController.navigate("user_past_events") }  // Add navigation
+                onClick = {navController.navigate("user_past_events")}
             )
 
             SettingsButton(

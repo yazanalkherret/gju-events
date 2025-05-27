@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.components.EventItem
 import com.example.myapplication.components.Screen
+import com.example.myapplication.viewmodels.isEventInPast
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -62,13 +63,5 @@ fun AdminPastEvents(navController: NavHostController, viewModel: EventViewModel)
     }
 }
 
-fun isEventInPast(dateString: String, timeString: String): Boolean {
-    return try {
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-        val fullDateTime = formatter.parse("$dateString $timeString")
-        fullDateTime?.before(Date()) ?: false
-    } catch (e: Exception) {
-        false
-    }
-}
+
 

@@ -81,11 +81,17 @@ fun AttendanceScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row {
-                    Icon(Icons.Default.DateRange,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("${event?.date} ${event?.time}", fontSize = 12.sp)
+                    Text(
+                        text = event?.date?.takeIf { it.isNotEmpty() } ?: "Date not set",
+                        fontSize = 12.sp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = event?.time?.takeIf { it.isNotEmpty() } ?: "Time not set",
+                        fontSize = 12.sp
+                    )
                 }
                 Text("${event?.room}", fontSize = 12.sp)
             }
