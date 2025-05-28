@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.components.EventItem
 import com.example.myapplication.components.EventItemUser
+import com.example.myapplication.components.PastEventItemUser
 import com.example.myapplication.components.Screen
 import com.example.myapplication.viewmodels.isEventInPast
 import java.text.SimpleDateFormat
@@ -48,7 +49,7 @@ fun PastEventsScreen(navController: NavHostController, viewModel: EventViewModel
                 ) {
                     items(finishedEvents) { event ->
                         val isEnrolled = viewModel.isUserEnrolled(event)
-                        EventItemUser(
+                        PastEventItemUser(
                             event = event,
                             onEnrollClick = {
                                 val newEnrollmentState = !isEnrolled
