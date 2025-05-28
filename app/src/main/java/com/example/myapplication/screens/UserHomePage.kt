@@ -49,7 +49,7 @@ fun UserHomePage(navController: NavHostController, viewModel: EventViewModel) {
         } else {
             LazyColumn {
                 items(items = events.takeLast(3).reversed()) { event ->
-                    val isEnrolled = viewModel.isUserEnrolled(event.title)
+                    val isEnrolled = event.let { viewModel.isUserEnrolled(it) }
 
                     EventItemUser(
                         event = event,
@@ -57,9 +57,9 @@ fun UserHomePage(navController: NavHostController, viewModel: EventViewModel) {
                             val newEnrollmentState = !isEnrolled
                             // Immediate UI update
                             if (newEnrollmentState) {
-                                viewModel.enrollToEvent(event.title)
+                                viewModel.enrollToEvent(event.id)
                             } else {
-                                viewModel.unenrollFromEvent(event.title)
+                                viewModel.unenrollFromEvent(event.id)
                             }
                         },
                         onCardClick = {

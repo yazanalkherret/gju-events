@@ -74,8 +74,6 @@ class EventViewModel() : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     init {
         fetchEventsRealTime() // Start listening for data changes
-        loadEnrollments()
-        loadEnrolledEvents()
     }
     private fun fetchEventsRealTime() {
         db.collection("events")
@@ -86,6 +84,7 @@ class EventViewModel() : ViewModel() {
                     doc.toObject(Event::class.java)
                 }?.let { eventsList ->
                     _events.value = eventsList  // Update _events instead of events
+                    loadEnrolledEventsFromLocalEvents()
                 }
             }
     }
@@ -110,61 +109,28 @@ class EventViewModel() : ViewModel() {
     fun enrollToEvent(eventId: String) {
         viewModelScope.launch {
             val userEmail = currentUser.value.email
-            // Remove space between title and email
-            val docId = "$eventId$userEmail" // Fixed
+            val eventRef = db.collection("events").document(eventId)
 
-            val enrollmentData = hashMapOf(
-                "userEmail" to userEmail,
-                "eventId" to eventId,
-                "timestamp" to FieldValue.serverTimestamp()
-            )
-
-            db.collection("enrollments").document(docId)
-                .set(enrollmentData)
+            eventRef.update("enrolledStudents", FieldValue.arrayUnion(userEmail))
                 .addOnSuccessListener {
-                    loadEnrollments()
+                    Log.d("Enroll", "Successfully enrolled $userEmail in event $eventId")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Enroll", "Failed to enroll $userEmail in event $eventId", e)
                 }
         }
     }
 
-    fun isUserEnrolled(eventTitle: String): Boolean {
-        return enrollments.value.any {
-            it.userEmail == currentUser.value.email &&
-                    it.eventTitle == eventTitle
+
+    fun isUserEnrolled(event: Event): Boolean {
+        return event.enrolledStudents.contains(currentUser.value.email)
+    }
+
+    private fun loadEnrolledEventsFromLocalEvents() {
+        val userEmail = currentUser.value.email
+        _enrolledEvents.value = _events.value.filter { event ->
+            event.enrolledStudents.contains(userEmail)
         }
-    }
-    private fun loadEnrollments() {
-        val userEmail = currentUser.value.email
-
-        db.collection("enrollments")
-            .whereEqualTo("userEmail", userEmail)
-            .addSnapshotListener { snapshots, error ->
-                snapshots?.documents?.mapNotNull {
-                    it.toObject(Enrollment::class.java)
-                }?.let { enrollmentsList ->
-                    _enrollments.value = enrollmentsList
-                }
-            }
-    }
-    private fun loadEnrolledEvents() {
-        val userEmail = currentUser.value.email
-        db.collection("enrollments")
-            .whereEqualTo("userEmail", userEmail)
-            .addSnapshotListener { enrollSnap, _ ->
-                val enrolledTitles = enrollSnap?.documents?.mapNotNull {
-                    it.getString("eventTitle")
-                } ?: emptyList()
-
-                if (enrolledTitles.isNotEmpty()) {
-                    db.collection("events")
-                        .whereIn("title", enrolledTitles)
-                        .addSnapshotListener { eventSnap, _ ->
-                            _enrolledEvents.value = eventSnap?.toObjects(Event::class.java) ?: emptyList()
-                        }
-                } else {
-                    _enrolledEvents.value = emptyList()
-                }
-            }
     }
 
     fun deleteEvent(
@@ -192,30 +158,22 @@ class EventViewModel() : ViewModel() {
             _currentUser.value = User() // Reset user
         }
     }
-    fun unenrollFromEvent(
-        eventTitle: String,
-        onSuccess: () -> Unit = {}
-    ) {
+    fun unenrollFromEvent(eventId: String, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             val userEmail = currentUser.value.email
-            // Must match EXACTLY with enrollment ID format
-            val docId = "$eventTitle${userEmail}"
+            val eventRef = db.collection("events").document(eventId)
 
-            Log.d("Unenroll", "Attempting to delete: $docId") // Add this
-
-            db.collection("enrollments").document(docId)
-                .delete()
+            eventRef.update("enrolledStudents", FieldValue.arrayRemove(userEmail))
                 .addOnSuccessListener {
-                    Log.d("Unenroll", "Successfully deleted: $docId")
-                    loadEnrollments()
-                    loadEnrolledEvents()
-                    onSuccess() // Trigger callback
+                    Log.d("Unenroll", "Successfully unenrolled $userEmail from event $eventId")
+                    onSuccess()
                 }
                 .addOnFailureListener { e ->
-                    Log.e("Unenroll", "Failed to delete $docId", e)
+                    Log.e("Unenroll", "Failed to unenroll $userEmail from event $eventId", e)
                 }
         }
     }
+
 }
 fun isEventInPast(dateString: String, timeString: String): Boolean {
     return try {

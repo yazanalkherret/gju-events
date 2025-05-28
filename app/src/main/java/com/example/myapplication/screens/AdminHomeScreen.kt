@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.components.EventItem
 import com.example.myapplication.components.Screen
+import com.example.myapplication.viewmodels.isEventInPast
 
 @Composable
 fun HomeScreen(
@@ -27,6 +28,10 @@ fun HomeScreen(
                ) {
     // Correct way to observe StateFlow
     val events by viewModel.events.collectAsState()
+    val activeEvents = events.filter { event ->
+        event.date != null && event.time != null &&
+                !isEventInPast(event.date!!, event.time!!)
+    }
 
     Column(
         modifier = Modifier
@@ -36,11 +41,11 @@ fun HomeScreen(
         Text("All Events", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (events.isEmpty()) {
+        if (activeEvents.isEmpty()) {
             Text("No events found")
         } else {
             LazyColumn {
-                items(items = events.takeLast(3).reversed()) { event ->
+                items(items = activeEvents.takeLast(3).reversed()) { event ->
                     EventItem(
                         event = event,
                         navController = navController,

@@ -38,7 +38,7 @@ fun UserMyEvents(navController: NavHostController, viewModel: EventViewModel) {
                 items(items = enrolledEvents) { event ->
                     EventItemUser(
                         event = event,
-                        onEnrollClick = { viewModel.unenrollFromEvent(event.title) },
+                        onEnrollClick = { viewModel.unenrollFromEvent(event.id) },
                         onCardClick = { navController.navigate("user_event_details/${event.title}") },
                         isEnrolled = true
                         //viewModel = EventViewModel()

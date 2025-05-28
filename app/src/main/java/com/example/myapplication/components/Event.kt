@@ -12,5 +12,6 @@ data class Event(
     val time: String="",  // Formatted time
     val description: String="",
     val imageBase64: String? = null,
-    val attendedStudents: List<String> = emptyList()
+    val attendedStudents: List<String> = emptyList(),
+    val enrolledStudents: List<String> = emptyList()
 )

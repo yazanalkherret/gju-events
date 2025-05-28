@@ -48,6 +48,7 @@ class AttendanceViewModel : ViewModel() {
                 }
             }
     }
+
     // New  sync for attendance
     private fun fetchAttendedStudents() {
         eventListener = db.collection("events").document(eventId)

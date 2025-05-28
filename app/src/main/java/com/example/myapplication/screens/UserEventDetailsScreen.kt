@@ -27,7 +27,7 @@ fun UserEventDetailsScreen(
 ) {
     // Fetch event details from ViewModel
     val event = viewModel.getEventByTitle(eventTitle)
-    val isEnrolled = viewModel.isUserEnrolled(eventTitle)
+    val isEnrolled = event?.let { viewModel.isUserEnrolled(it) } ?: false
 
     Scaffold(
         topBar = {
