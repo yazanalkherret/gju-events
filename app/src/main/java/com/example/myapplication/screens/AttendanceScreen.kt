@@ -22,20 +22,16 @@ fun AttendanceScreen(
     viewModel: AttendanceViewModel = viewModel()
 ) {
     var searchText by remember { mutableStateOf("") }
-    val students = viewModel.students
+    val enrolledStudents by viewModel.enrolledStudents.collectAsState()
     val attendedStudents by viewModel.attendedStudents.collectAsState()
     val event by viewModel.event.collectAsState()
-    val checkStates = remember {
-        mutableStateMapOf<String, Boolean>().apply {
-            students.forEach { this[it.email] = true }
-        }
-    }
+
     LaunchedEffect(eventId) {
         viewModel.initialize(eventId) // Call on the instance // Initialize with event ID
     }
 
-    val filteredStudents = students.filter {
-        it.email.contains(searchText, ignoreCase = true)
+    val filteredStudents = enrolledStudents.filter {
+        it.contains(searchText, ignoreCase = true)
     }
 
     Scaffold(
@@ -57,10 +53,8 @@ fun AttendanceScreen(
         bottomBar = {
             OutlinedButton(
                 onClick = {
-                    viewModel.students.forEach { student ->
-                        viewModel.toggleAttendance(student.email, true)
-                    }
-                },
+                    viewModel.markAllAsAttended()},
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -111,18 +105,18 @@ fun AttendanceScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyColumn(modifier = Modifier.weight(1f)) {
-                items(filteredStudents) { student ->
+                items(filteredStudents) { email ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(student.email)
+                        Text(email)
                         Checkbox(
-                            checked = attendedStudents.contains(student.email),
+                            checked = attendedStudents.contains(email),
                             onCheckedChange = { isChecked ->
-                                viewModel.toggleAttendance(student.email, isChecked)
+                                viewModel.toggleAttendance(email, isChecked)
                             }
                         )
                     }

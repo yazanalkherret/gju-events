@@ -1,5 +1,6 @@
 package com.example.myproject.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,51 +21,61 @@ data class Student(
 )
 
 class AttendanceViewModel : ViewModel() {
-    private val db = Firebase.firestore  // Initialize
-    private var eventId: String = ""  // Add eventId storage
-    private var enrollmentListener: ListenerRegistration? = null  // Add listener reference
+    private val db = Firebase.firestore
+    private var eventId: String = ""
     private var eventListener: ListenerRegistration? = null
+    private val _event = MutableStateFlow<Event?>(null)
+    val event: StateFlow<Event?> = _event.asStateFlow()
+
+    private val _enrolledStudents = MutableStateFlow<List<String>>(emptyList())
+    val enrolledStudents: StateFlow<List<String>> = _enrolledStudents.asStateFlow()
+
     private val _attendedStudents = MutableStateFlow<Set<String>>(emptySet())
     val attendedStudents: StateFlow<Set<String>> = _attendedStudents.asStateFlow()
-    private val _event = MutableStateFlow<Event?>(null)
-    val event: StateFlow<Event?> = _event
 
-    private fun fetchEvent() {
-        db.collection("events").document(eventId)
-            .addSnapshotListener { snapshot, _ ->
-                _event.value = snapshot?.toObject(Event::class.java)
-            }
+
+    fun initialize(eventId: String) {
+        this.eventId = eventId
+        fetchEvent()
     }
+    private fun fetchEvent() {
+        eventListener?.remove()
+        eventListener = db.collection("events").document(eventId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("AttendanceVM", "Error fetching event", error)
+                    return@addSnapshotListener
+                }
 
-    private fun fetchEnrollments() {
-        enrollmentListener = db.collection("enrollments")
-            .whereEqualTo("eventTitle", eventId) // Get enrollments for THIS event
-            .addSnapshotListener { snapshots, _ ->
-                snapshots?.documents?.forEach { doc ->
-                    val email = doc.getString("userEmail") ?: return@forEach
-                    if (students.none { it.email == email }) {
-                        students.add(Student(email)) // Populate with enrolled emails
+                snapshot?.let {
+                    if (it.exists()) {
+                        val eventData = it.toObject(Event::class.java)
+                        _event.value = eventData
+
+                        // Update enrolled students
+                        eventData?.enrolledStudents?.let { students ->
+                            _enrolledStudents.value = students
+                        }
+
+                        // Update attended students
+                        eventData?.attendedStudents?.let { attended ->
+                            _attendedStudents.value = attended.toSet()
+                        }
+                    } else {
+                        Log.w("AttendanceVM", "Event document does not exist")
                     }
                 }
             }
     }
 
-    // New  sync for attendance
-    private fun fetchAttendedStudents() {
-        eventListener = db.collection("events").document(eventId)
-            .addSnapshotListener { snapshot, _ ->
-                val attended = snapshot?.get("attendedStudents") as? List<String> ?: emptyList()
-                _attendedStudents.value = attended.toSet() // Update StateFlow
-            }
-    }
     // New  update
     fun toggleAttendance(studentEmail: String, isPresent: Boolean) {
         db.collection("events").document(eventId)
-            .update("attendedStudents", if (isPresent) {
-                FieldValue.arrayUnion(studentEmail) // Add to attended
-            } else {
-                FieldValue.arrayRemove(studentEmail) // Remove from attended
-            })
+            .update(
+                "attendedStudents",
+                if (isPresent) FieldValue.arrayUnion(studentEmail)
+                else FieldValue.arrayRemove(studentEmail)
+            )
     }
 
     // State management
@@ -81,12 +92,7 @@ class AttendanceViewModel : ViewModel() {
         ))
     }
     // In AttendanceViewModel.kt
-    fun initialize(eventId: String) {
-        this.eventId = eventId
-        fetchEvent()
-        fetchEnrollments()
-        fetchAttendedStudents()
-    }
+
     fun getFilteredStudents(): List<Student> {
         return students.filter {
             it.email.contains(searchText, ignoreCase = true)
@@ -94,10 +100,12 @@ class AttendanceViewModel : ViewModel() {
     }
 
     fun markAllAsAttended() {
-        students.replaceAll { it.copy(attended = true) }
+        val emails = _event.value?.enrolledStudents ?: emptyList()
+        db.collection("events").document(eventId)
+            .update("attendedStudents", emails)
     }
+
     override fun onCleared() {
-        enrollmentListener?.remove()
         eventListener?.remove()
         super.onCleared()
     }
