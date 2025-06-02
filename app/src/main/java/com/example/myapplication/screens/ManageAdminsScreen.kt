@@ -4,6 +4,7 @@ package com.example.myapplication.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
@@ -18,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun ManageAdminsScreen(userViewModel: UserViewModel = viewModel()) {
@@ -71,8 +73,14 @@ fun ManageAdminsScreen(userViewModel: UserViewModel = viewModel()) {
                         }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
-        ) {
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            shape = CircleShape,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF1F6BAD),
+                contentColor = Color.White
+            )) {
             Text("Add Admin")
         }
 

@@ -45,7 +45,7 @@ fun HomeScreen(
             Text("No events found")
         } else {
             LazyColumn {
-                items(items = activeEvents.takeLast(3).reversed()) { event ->
+                items(items = activeEvents.reversed()) { event ->
                     EventItem(
                         event = event,
                         navController = navController,

@@ -1,6 +1,6 @@
 package com.example.myapplication.screens
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,10 +15,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -31,15 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.myapplication.components.Screen
-import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.viewmodels.UserViewModel
+import com.example.myapplication.R
 
 
 @Composable
@@ -52,38 +50,38 @@ fun UserSettings(navController: NavHostController,
             .padding(16.dp)
     ) {
         item {
-            // Modified Profile Card
-            ElevatedCard(
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp),  // Increased height
-                elevation = CardDefaults.cardElevation(4.dp)
+                    .height(160.dp),
+                colors = CardDefaults.cardColors(
+                   containerColor = MaterialTheme.colorScheme.background
+                )
             ) {
                 Row(
                     modifier = Modifier
-                        .padding(24.dp)  // Increased padding
                         .fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
+                    Image(
+                        painter = painterResource(id = R.drawable.avatar),
                         contentDescription = "Profile",
                         modifier = Modifier
-                            .size(100.dp)  // Larger icon
+                            .size(120.dp)
                             .clip(CircleShape)
                     )
 
-                    Spacer(modifier = Modifier.width(24.dp))  // Increased spacing
 
                     Column(
-                        verticalArrangement = Arrangement.Center  // Better vertical alignment
+                        verticalArrangement = Arrangement.Center
                     ) {
                         Text(
                             text = userData?.fullName ?: "Loading...",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
-                        Spacer(modifier = Modifier.height(12.dp))  // Increased spacing
+                        Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = userData?.email ?: "Loading...",
                             style = MaterialTheme.typography.bodyMedium,
@@ -93,25 +91,24 @@ fun UserSettings(navController: NavHostController,
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // Settings Options
-            SettingsButton(
-                icon = Icons.Filled.Lock,
+
+            CenteredTextButton(
                 text = "Past Events",
-                onClick = {navController.navigate("user_past_events")}
+                showArrow = true,
+                onClick = { navController.navigate("user_past_events") }
             )
 
-            SettingsButton(
-                icon = Icons.Filled.Lock,
+            CenteredTextButton(
                 text = "Change Password",
+                showArrow = false,
                 onClick = {}
             )
 
-
-            SettingsButton(
-                icon = Icons.Filled.ExitToApp,
+            CenteredTextButton(
                 text = "Logout",
+                showArrow = false,
                 onClick = {}
             )
         }
@@ -119,34 +116,32 @@ fun UserSettings(navController: NavHostController,
 }
 
 @Composable
-fun UserSettingsButton(icon: ImageVector, text: String, onClick: () -> Unit) {
+fun CenteredTextButton(
+    text: String,
+    showArrow: Boolean,
+    onClick: () -> Unit
+) {
     Button(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
+            .height(48.dp)
             .padding(vertical = 4.dp),
-        shape = MaterialTheme.shapes.medium,
-        enabled = true
+        shape = CircleShape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF1F6BAD),
+            contentColor = Color.White
+        )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = text,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = text,
-                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1f)
-            )
-            Icon(
-                imageVector = Icons.Default.ArrowForward,
-                contentDescription = "Action",
-                modifier = Modifier.size(20.dp)
             )
         }
     }

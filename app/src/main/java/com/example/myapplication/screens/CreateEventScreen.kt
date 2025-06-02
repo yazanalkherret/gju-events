@@ -54,6 +54,9 @@ import java.util.Calendar
 import java.util.Locale
 import com.example.event_planner.utils.rememberImagePicker
 import android.util.Base64
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.graphics.Color
 
 
 @Composable
@@ -283,7 +286,14 @@ fun CreateEventScreen(viewModel: EventViewModel) {
                     }
                 )
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            shape = CircleShape,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF1F6BAD),
+                contentColor = Color.White
+            )
         ) {
             Text("Create Event")
         }

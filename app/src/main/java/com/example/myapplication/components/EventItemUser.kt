@@ -44,6 +44,7 @@ import com.example.myapplication.utils.decodeBase64ToImage
 import com.example.myapplication.viewmodels.EventViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun EventItemUser(
@@ -58,17 +59,16 @@ fun EventItemUser(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            //.padding(vertical = 8.dp)
             .clickable { onCardClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = MaterialTheme.colorScheme.background
         )
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+                .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
         )
         {
             Row(
@@ -77,41 +77,27 @@ fun EventItemUser(
                 verticalAlignment = Alignment.Top
             ) {
                 // Left Column (Image + Date/Time)
-                Column(modifier = Modifier.width(100.dp)) {
-                    event.imageBase64?.let { base64 ->
-                        val imageBitmap = decodeBase64ToImage(base64)
+                Column(modifier = Modifier.width(160.dp)) {
+                    val imageBase64 = event.imageBase64
+                    if (imageBase64 != null) {
+                        val imageBitmap = decodeBase64ToImage(imageBase64)
                         if (imageBitmap != null) {
                             Image(
                                 bitmap = imageBitmap,
                                 contentDescription = "Event Image",
                                 modifier = Modifier
-                                    .size(100.dp, 120.dp)
+                                    .size(160.dp, 160.dp)
                                     .clip(MaterialTheme.shapes.medium),
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                            // Optional: Show a placeholder or error message
-                            Box(
-                                modifier = Modifier
-                                    .size(100.dp, 120.dp)
-                                    .clip(MaterialTheme.shapes.medium)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                            ) {
-                                Text(
-                                    text = "No Image",
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                            }
+                            // Base64 string exists but decoding failed
+                            NoImagePlaceholder()
                         }
+                    } else {
+                        // No Base64 string at all
+                        NoImagePlaceholder()
                     }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "${event.date} ${event.time}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
 
                 // Right Column (Content)
@@ -124,31 +110,30 @@ fun EventItemUser(
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     Text(
                         text = event.description,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        //minLines = 4,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Room aligned to right under description
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Text(
-                            text = event.room,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
                 }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "${event.date} ${event.time}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = event.room,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color(0xFF1F6BAD)
+                )
             }
 
             // Buttons Row
@@ -159,21 +144,35 @@ fun EventItemUser(
                 },
                 enabled = true,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (localEnrolled) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = if (localEnrolled) MaterialTheme.colorScheme.onError
-                    else MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = if (localEnrolled) Color(0xFFBDE4FA)
+                    else Color(0xFF1F6BAD),
+                    contentColor = if (localEnrolled) Color(0xFF1F6BAD)
+                    else Color.White
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
             ) {
-                Text(if (localEnrolled) "Unenroll" else "Enroll Now")
+                Text(
+                    text = if (localEnrolled) "Enrolled" else "Enroll",
+                )
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
 
         }
+    }
+}
+
+@Composable
+fun NoImagePlaceholder() {
+    Box(
+        modifier = Modifier
+            .size(160.dp, 160.dp)
+            .clip(MaterialTheme.shapes.medium)
+            .background(Color(0xFFF1F9FE)), // Set hex color here
+        contentAlignment = Alignment.Center
+    ) {
+        Text("No Image", color = Color.Black) // Optional: make text white for contrast
     }
 }

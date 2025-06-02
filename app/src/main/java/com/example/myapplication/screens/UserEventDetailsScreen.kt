@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myapplication.viewmodels.EventViewModel
 import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.example.myapplication.utils.decodeBase64ToImage
 import com.example.myapplication.components.Screen
@@ -63,13 +64,13 @@ fun UserEventDetailsScreen(
                     .fillMaxWidth()
                     .padding(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isEnrolled) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = if (isEnrolled) MaterialTheme.colorScheme.onError
-                    else MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = if (isEnrolled) Color(0xFFBDE4FA)
+                    else Color(0xFF1F6BAD),
+                    contentColor = if (isEnrolled) Color(0xFF1F6BAD)
+                    else Color.White
                 )
             ) {
-                Text(if (isEnrolled) "Unenroll" else "Enroll Now")
+                Text(if (isEnrolled) "Unenroll" else "Enroll")
             }
         }
     ) { innerPadding ->

@@ -48,7 +48,7 @@ fun UserHomePage(navController: NavHostController, viewModel: EventViewModel) {
             Text("No events found")
         } else {
             LazyColumn {
-                items(items = events.takeLast(3).reversed()) { event ->
+                items(items = events.reversed()) { event ->
                     val isEnrolled = event.let { viewModel.isUserEnrolled(it) }
 
                     EventItemUser(
