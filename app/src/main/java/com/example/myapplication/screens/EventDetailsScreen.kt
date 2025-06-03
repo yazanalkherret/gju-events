@@ -1,7 +1,9 @@
 package com.example.myapplication.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -9,13 +11,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.myapplication.components.NoImagePlaceholder
 import com.example.myapplication.components.Screen
 import com.example.myapplication.utils.decodeBase64ToImage
 import com.example.myapplication.viewmodels.EventViewModel
@@ -50,24 +55,19 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
         ) {
             // Event Image
             event?.imageBase64?.let { base64 ->
-                val imageBitmap = decodeBase64ToImage(base64)
-                if (imageBitmap != null) {
-                    Image(
-                        bitmap = imageBitmap,
-                        contentDescription = "Event Image",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(250.dp)
-                            .clip(MaterialTheme.shapes.large),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Text(
-                        "Failed to load image",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+                    val imageBitmap = decodeBase64ToImage(base64)
+                    if (imageBitmap != null) {
+                        Image(
+                            bitmap = imageBitmap,
+                            contentDescription = "Event Image",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        NoImagePlaceholder()
+                    }
             }
 
             // Event Content
@@ -126,9 +126,13 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
                             .padding(top = 24.dp),
                         horizontalArrangement = Arrangement.Start
                     ) {
-                        FilledTonalButton(
+                        Button(
                             onClick = { navController.navigate(Screen.Attendance.createRoute(eventId)) },
-                            modifier = Modifier.width(190.dp)
+                            modifier = Modifier.width(190.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF1F6BAD),
+                                contentColor = Color.White
+                            )
                         ) {
                             Text("Attendance")
                         }
@@ -137,7 +141,12 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
 
                         OutlinedButton(
                             onClick = { navController.navigate(Screen.ModifyEvent.createRoute(eventId)) },
-                            modifier = Modifier.width(190.dp)
+                            modifier = Modifier.width(190.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = Color(0xFF1F6BAD) // text/icon color
+                            ),
+                            border = BorderStroke(1.dp, Color(0xFF1F6BAD)) // border color and thickness
+
                         ) {
                             Text("Modify")
                         }
@@ -152,7 +161,7 @@ fun EventDetailsScreen(navController: NavController, viewModel: EventViewModel, 
                     ) {
                         FilledTonalButton(
                             onClick = { showDeleteDialog = true },
-                            modifier = Modifier.width(190.dp), // Match width of other buttons
+                            modifier = Modifier.fillMaxWidth(), // Match width of other buttons
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = MaterialTheme.colorScheme.errorContainer,
                                 contentColor = MaterialTheme.colorScheme.onErrorContainer
