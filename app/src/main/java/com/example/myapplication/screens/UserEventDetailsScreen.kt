@@ -89,8 +89,7 @@ fun UserEventDetailsScreen(
                         contentDescription = "Event Image",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(250.dp)
-                            .clip(MaterialTheme.shapes.large),
+                            .height(250.dp),
                         contentScale = ContentScale.Crop
                     )
                 } else {
