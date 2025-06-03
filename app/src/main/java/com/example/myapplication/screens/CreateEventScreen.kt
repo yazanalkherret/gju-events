@@ -54,6 +54,8 @@ import java.util.Calendar
 import java.util.Locale
 import com.example.event_planner.utils.rememberImagePicker
 import android.util.Base64
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.graphics.Color
@@ -136,7 +138,7 @@ fun CreateEventScreen(viewModel: EventViewModel) {
             value = title,
             onValueChange = { title = it },
             label = { Text("Event Title") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(56.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -149,11 +151,12 @@ fun CreateEventScreen(viewModel: EventViewModel) {
             OutlinedTextField(
                 value = datePickerState.selectedDateMillis?.let {
                     dateFormatter.format(it)
-                } ?: "Select Date",
+                } ?: "Date",
                 onValueChange = {},
-                label = { Text("Date") },
+                //label = { Text("Date") },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(56.dp)
                     .clickable { showDatePicker = true },
                 readOnly = true,
                 enabled = true,  // Critical for maintaining styling
@@ -187,6 +190,7 @@ fun CreateEventScreen(viewModel: EventViewModel) {
                 label = { Text("Time") },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(56.dp)
                     .clickable { showTimePicker = true },
                 readOnly = true,
                 enabled = true,  // Critical for maintaining styling
@@ -213,7 +217,7 @@ fun CreateEventScreen(viewModel: EventViewModel) {
             value = room,
             onValueChange = { room = it },
             label = { Text("Room") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(56.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -222,8 +226,7 @@ fun CreateEventScreen(viewModel: EventViewModel) {
             value = description,
             onValueChange = { description = it },
             label = { Text("Description") },
-            modifier = Modifier.fillMaxWidth(),
-            //maxLines = 3
+            modifier = Modifier.fillMaxWidth().height(256.dp),
         )
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -233,7 +236,6 @@ fun CreateEventScreen(viewModel: EventViewModel) {
                 Base64.encodeToString(bytes, Base64.NO_WRAP) // Changed to NO_WRAP
             }
         }
-
         // Create Button
         Button(
             onClick = {
