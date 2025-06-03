@@ -170,9 +170,9 @@ fun NoImagePlaceholder() {
         modifier = Modifier
             .size(160.dp, 160.dp)
             .clip(MaterialTheme.shapes.medium)
-            .background(Color(0xFFF1F9FE)), // Set hex color here
+            .background(Color(0xFFF1F9FE)),
         contentAlignment = Alignment.Center
     ) {
-        Text("No Image", color = Color.Black) // Optional: make text white for contrast
+        Text("No Image", color = Color.Black)
     }
 }
