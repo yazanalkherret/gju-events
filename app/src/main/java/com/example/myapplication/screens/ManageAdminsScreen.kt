@@ -1,7 +1,9 @@
 // Add to your Screens package as ManageAdminsScreen.kt
 package com.example.myapplication.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -120,14 +122,21 @@ fun AdminListItem(email: String, onRemove: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFBDE4FA) // Light blue background
+        )
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+
         ) {
-            Text(text = email)
+            Text(
+                text = email,
+                modifier = Modifier.weight(1f)
+            )
+
             IconButton(onClick = onRemove) {
                 Icon(
                     imageVector = Icons.Default.Close,
