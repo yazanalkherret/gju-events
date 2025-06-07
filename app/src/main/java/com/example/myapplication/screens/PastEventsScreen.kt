@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.myapplication.viewmodels.EventViewModel
@@ -16,15 +17,18 @@ import com.example.myapplication.viewmodels.isEventInPast
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PastEventsScreen(navController: NavHostController, viewModel: EventViewModel) {
     val allEvents by viewModel.events.collectAsState()
+    val context = LocalContext.current
+    val currentUser by viewModel.currentUser.collectAsState()
 
-    // Filter only events that are in the past (based on combined date + time)
-    val finishedEvents = allEvents.filter { event ->
-        event.date != null && event.time != null &&
-                isEventInPast(event.date!!, event.time!!)
+    val finishedAttendedEvents = allEvents.filter { event ->
+        event.date.isNotBlank() && event.time.isNotBlank() &&
+                isEventInPast(event.date, event.time) &&
+                event.attendedStudents.contains(currentUser.email)
     }
 
 
@@ -41,13 +45,13 @@ fun PastEventsScreen(navController: NavHostController, viewModel: EventViewModel
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            if (finishedEvents.isEmpty()) {
+            if (finishedAttendedEvents.isEmpty()) {
                 Text("No finished events found.", style = MaterialTheme.typography.bodyLarge)
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(finishedEvents) { event ->
+                    items(finishedAttendedEvents) { event ->
                         val isEnrolled = viewModel.isUserEnrolled(event)
                         PastEventItemUser(
                             event = event,
@@ -55,9 +59,9 @@ fun PastEventsScreen(navController: NavHostController, viewModel: EventViewModel
                                 val newEnrollmentState = !isEnrolled
                                 // Immediate UI update
                                 if (newEnrollmentState) {
-                                    viewModel.enrollToEvent(event.title)
+                                    viewModel.enrollToEvent(event.title, context )
                                 } else {
-                                    viewModel.unenrollFromEvent(event.title)
+                                    viewModel.unenrollFromEvent(event.title,context)
                                 }
                             },
                             onCardClick = {

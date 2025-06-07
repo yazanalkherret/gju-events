@@ -16,8 +16,12 @@ import com.example.myapplication.viewmodels.EventViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import com.example.myapplication.utils.decodeBase64ToImage
 import com.example.myapplication.components.Screen
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,8 +32,14 @@ fun UserEventDetailsScreen(
 ) {
     // Fetch event details from ViewModel
     val event = viewModel.getEventByTitle(eventTitle)
-    val isEnrolled = event?.let { viewModel.isUserEnrolled(it) } ?: false
+    val currentUser by viewModel.currentUser.collectAsState()
+    val isEnrolled = remember(event, currentUser) {
+        event?.enrolledStudents?.contains(currentUser.email) ?: false
+    }
 
+
+
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,18 +58,18 @@ fun UserEventDetailsScreen(
             // Add the enroll button at the bottom
             Button(
                 onClick = {
-                    if (isEnrolled) {
-                        viewModel.unenrollFromEvent(eventTitle) // Use parameter directly
-                        {
-                            // Navigate back after successful unenrollment
+                    event?.let {
+                        if (isEnrolled) {
+                            viewModel.unenrollFromEvent(it.id, context) {
+                                navController.popBackStack()
+                            }
+                        } else {
+                            viewModel.enrollToEvent(it.id, context)
                             navController.popBackStack()
                         }
-                    } else {
-                        viewModel.enrollToEvent(eventTitle)
-                            navController.popBackStack()
-
                     }
-                },
+                }
+                ,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),

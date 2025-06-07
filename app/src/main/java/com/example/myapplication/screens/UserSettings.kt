@@ -38,11 +38,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.myapplication.viewmodels.UserViewModel
 import com.example.myapplication.R
+import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
 fun UserSettings(navController: NavHostController,
-                 userViewModel: UserViewModel) {
+                 userViewModel: UserViewModel,
+                 onLogout: () -> Unit) {
     val userData by userViewModel.userData.collectAsState()
     LazyColumn(
         modifier = Modifier
@@ -103,13 +105,15 @@ fun UserSettings(navController: NavHostController,
             CenteredTextButton(
                 text = "Change Password",
                 showArrow = false,
-                onClick = {}
+                onClick = {navController.navigate("forgot_password")}
             )
 
             CenteredTextButton(
                 text = "Logout",
                 showArrow = false,
-                onClick = {}
+                onClick = {
+                    FirebaseAuth.getInstance().signOut()
+                    onLogout()}
             )
         }
     }

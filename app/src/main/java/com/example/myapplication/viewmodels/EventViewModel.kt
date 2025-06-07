@@ -1,5 +1,10 @@
 package com.example.myapplication.viewmodels
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +22,8 @@ import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.provider.Settings
+import com.example.myapplication.components.EventReminderReceiver
 
 data class User(
     val id: String = "",
@@ -106,13 +113,64 @@ class EventViewModel() : ViewModel() {
             }
         }
     }
-    fun enrollToEvent(eventId: String) {
+    fun scheduleEventReminderWithCheck(context: Context, event: Event) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!alarmManager.canScheduleExactAlarms()) {
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                context.startActivity(intent)
+                return
+            }
+        }
+
+        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        val eventTimeMillis = formatter.parse("${event.date} ${event.time}")?.time ?: return
+        val reminderTime = eventTimeMillis - 60 * 60 * 1000
+
+        if (reminderTime <= System.currentTimeMillis()) return
+
+        val intent = Intent(context, EventReminderReceiver::class.java).apply {
+            putExtra("title", "Upcoming Event")
+            putExtra("message", "Your event \"${event.title}\" starts in 1 hour!")
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            event.title.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        try {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, reminderTime, pendingIntent)
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
+    }
+
+    fun cancelEventReminder(context: Context, event: Event) {
+        val intent = Intent(context, EventReminderReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            event.title.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(pendingIntent)
+    }
+    fun enrollToEvent(eventId: String,context: Context) {
         viewModelScope.launch {
             val userEmail = currentUser.value.email
             val eventRef = db.collection("events").document(eventId)
 
             eventRef.update("enrolledStudents", FieldValue.arrayUnion(userEmail))
                 .addOnSuccessListener {
+                    val event = getEventById(eventId)
+                    if (event != null) {
+                        scheduleEventReminderWithCheck(context, event)
+                    }
                     Log.d("Enroll", "Successfully enrolled $userEmail in event $eventId")
                 }
                 .addOnFailureListener { e ->
@@ -158,13 +216,17 @@ class EventViewModel() : ViewModel() {
             _currentUser.value = User() // Reset user
         }
     }
-    fun unenrollFromEvent(eventId: String, onSuccess: () -> Unit = {}) {
+    fun unenrollFromEvent(eventId: String,context: Context,onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             val userEmail = currentUser.value.email
             val eventRef = db.collection("events").document(eventId)
 
             eventRef.update("enrolledStudents", FieldValue.arrayRemove(userEmail))
                 .addOnSuccessListener {
+                    val event = getEventById(eventId)
+                    if (event != null) {
+                        scheduleEventReminderWithCheck(context, event)
+                    }
                     Log.d("Unenroll", "Successfully unenrolled $userEmail from event $eventId")
                     onSuccess()
                 }

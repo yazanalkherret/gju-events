@@ -153,7 +153,7 @@ fun EventItemUser(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = if (localEnrolled) "Enrolled" else "Enroll",
+                    text = if (localEnrolled) "Unenroll" else "Enroll",
                 )
             }
 
