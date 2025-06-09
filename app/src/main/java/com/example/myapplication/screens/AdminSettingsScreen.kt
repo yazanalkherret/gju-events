@@ -1,5 +1,6 @@
 package com.example.myapplication.screens
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,7 @@ import com.example.myapplication.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.example.myapplication.components.Screen
 import com.example.myapplication.R
+import com.example.myapplication.activities.Login_Activity
 
 @Composable
 fun SettingsScreen(
@@ -123,7 +125,9 @@ fun SettingsScreen(
                 text = "Logout",
                 onClick = {
                     FirebaseAuth.getInstance().signOut()
-                    onLogout()
+                    val intent = Intent(context , Login_Activity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    context.startActivity(intent)
                 }
             )
 

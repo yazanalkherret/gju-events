@@ -1,5 +1,7 @@
 package com.example.myapplication.screens
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,14 +41,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.myapplication.viewmodels.UserViewModel
 import com.example.myapplication.R
+import com.example.myapplication.activities.Login_Activity
 import com.google.firebase.auth.FirebaseAuth
+
 
 
 @Composable
 fun UserSettings(navController: NavHostController,
                  userViewModel: UserViewModel,
-                 onLogout: () -> Unit) {
+                 onLogout: () -> Unit
+                 ) {
     val userData by userViewModel.userData.collectAsState()
+    val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -113,7 +120,10 @@ fun UserSettings(navController: NavHostController,
                 showArrow = false,
                 onClick = {
                     FirebaseAuth.getInstance().signOut()
-                    onLogout()}
+                    val intent = Intent(context , Login_Activity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    context.startActivity(intent)
+                }
             )
         }
     }
