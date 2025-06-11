@@ -14,15 +14,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.myapplication.screens.CreateEventScreen
 import com.example.myapplication.screens.EventDetailsScreen
-import com.example.myapplication.screens.SettingsScreen
 import com.example.myapplication.screens.HomeScreen
 import com.example.myapplication.screens.LoginScreen
-import com.example.myapplication.viewmodels.EventViewModel
-import com.example.myapplication.viewmodels.UserViewModel
 import com.example.myapplication.screens.ManageAdminsScreen
 import com.example.myapplication.screens.ModifyEventScreen
 import com.example.myapplication.screens.PastEventsScreen
+import com.example.myapplication.screens.SettingsScreen
+import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.viewmodels.LoginViewModel
+import com.example.myapplication.viewmodels.UserViewModel
 
 
 sealed class Screen(

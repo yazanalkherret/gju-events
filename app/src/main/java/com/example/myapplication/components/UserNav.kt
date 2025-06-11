@@ -7,22 +7,18 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.myapplication.components.Screen
-import com.example.myapplication.components.Screen.PastEventsScreen
 import com.example.myapplication.screens.ForgotPasswordScreen
+import com.example.myapplication.screens.LatestEvents
+import com.example.myapplication.screens.LoginScreen
+import com.example.myapplication.screens.PastEventsScreen
+import com.example.myapplication.screens.UserEventDetailsScreen
 import com.example.myapplication.screens.UserHomePage
 import com.example.myapplication.screens.UserMyEvents
 import com.example.myapplication.screens.UserSettings
-import com.example.myapplication.screens.LatestEvents
-import com.example.myapplication.screens.PastEventsScreen
-import com.example.myapplication.screens.UserEventDetailsScreen
-import com.example.myapplication.viewmodels.UserViewModel
 import com.example.myapplication.viewmodels.EventViewModel
-import com.example.myapplication.screens.LoginScreen
 import com.example.myapplication.viewmodels.ForgotPasswordViewModel
 import com.example.myapplication.viewmodels.LoginViewModel
-
-
+import com.example.myapplication.viewmodels.UserViewModel
 
 
 @Composable

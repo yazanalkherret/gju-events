@@ -5,12 +5,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.components.Enrollment
 import com.example.myapplication.components.Event
-import com.google.firebase.Timestamp
+import com.example.myapplication.components.EventReminderReceiver
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,8 +23,6 @@ import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import android.provider.Settings
-import com.example.myapplication.components.EventReminderReceiver
 
 data class User(
     val id: String = "",

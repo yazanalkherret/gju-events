@@ -1,14 +1,14 @@
 package com.example.myapplication.activities
 
+//import com.example.myapplication.XMLScreens.HomePage
 import android.content.Intent
 import android.os.Bundle
-import com.example.myapplication.screens.LoginScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import com.example.myapplication.screens.LoginScreen
 import com.example.myapplication.utils.UserActivity
-//import com.example.myapplication.XMLScreens.HomePage
 import com.example.myapplication.viewmodels.LoginViewModel
 
 

@@ -15,9 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.components.EventItem
 import com.example.myapplication.components.Screen
+import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.viewmodels.isEventInPast
 
 @Composable

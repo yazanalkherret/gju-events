@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.event_planner.ui.theme.MyApplicationTheme
-import com.example.myapplication.viewmodels.EventViewModel
-import com.example.myapplication.viewmodels.UserViewModel
 import com.example.myapplication.components.BottomNavigationBar
 import com.example.myapplication.components.NavigationHost
+import com.example.myapplication.viewmodels.EventViewModel
+import com.example.myapplication.viewmodels.UserViewModel
 
 class Admin_Activity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

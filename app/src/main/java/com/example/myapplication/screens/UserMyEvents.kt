@@ -16,9 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.myapplication.viewmodels.EventViewModel
-import com.example.myapplication.components.EventItem
 import com.example.myapplication.components.EventItemUser
+import com.example.myapplication.viewmodels.EventViewModel
 import com.example.myapplication.viewmodels.isEventInPast
 
 @Composable
