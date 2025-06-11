@@ -76,9 +76,3 @@ GjuEvents/
 This project is for educational use only. No license has been applied yet.
 
 ---
-
-## 🤝 Contributing
-
-If you'd like to contribute, feel free to fork the repo and submit a pull request!
-
----
