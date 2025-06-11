@@ -60,7 +60,7 @@ fun AttendanceScreen(
                     .padding(16.dp),
                 shape = RoundedCornerShape(25.dp)
             ) {
-                Text("Mark All As Attended")
+                Text("MARK ALL AS ATTENDED")
             }
         }
     ) { innerPadding ->
@@ -99,7 +99,6 @@ fun AttendanceScreen(
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(50.dp))
             )
 
             Spacer(modifier = Modifier.height(16.dp))
