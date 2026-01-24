@@ -4,17 +4,17 @@
 
 ---
 
-## ✨ Features
+##  Features
 
-- 🔐 User sign-up and login (Firebase Authentication)
-- 🗓️ Browse university events
-- ✅ Mark attendance or view event details
-- 🧠 MVVM architecture with Jetpack Compose
-- ☁️ Firebase integration (Firestore, Auth)
+-  User sign-up and login (Firebase Authentication)
+-  Browse university events
+-  Mark attendance or view event details
+-  MVVM architecture with Jetpack Compose
+-  Firebase integration (Firestore, Auth)
 
 ---
 
-## 📦 Tech Stack
+##  Tech Stack
 
 - **Kotlin**
 - **Jetpack Compose** for UI
@@ -24,7 +24,7 @@
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### 1. Clone the Repository
 
@@ -55,7 +55,7 @@ cd GJU-Events
 
 ---
 
-## 🛠 Project Structure
+##  Project Structure
 
 ```
 GjuEvents/
@@ -69,10 +69,3 @@ GjuEvents/
 └── settings.gradle.kts
 ```
 
----
-
-## 📄 License
-
-This project is for educational use only. No license has been applied yet.
-
----
