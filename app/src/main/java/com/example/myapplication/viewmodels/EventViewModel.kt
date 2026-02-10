@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.components.Enrollment
 import com.example.myapplication.components.Event
 import com.example.myapplication.components.EventReminderReceiver
+import com.example.myapplication.components.User
 import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,13 +21,6 @@ import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-data class User(
-    val id: String = "",
-    val name: String = "",
-    val email: String = "",
-    val isAdmin: Boolean = false
-)
 
 
 class EventViewModel() : BaseAuthViewModel() {
@@ -63,11 +57,9 @@ class EventViewModel() : BaseAuthViewModel() {
     val enrolledEvents: StateFlow<List<Event>> = _enrolledEvents.asStateFlow()
 
 
-
     private val _currentUser = MutableStateFlow(
         User(
-            email = mAuth.currentUser?.email?:"" ,
-            isAdmin = false
+            email = mAuth.currentUser?.email ?: "",
         )
     )
 
