@@ -44,6 +44,7 @@ import com.example.myapplication.R
 import com.example.myapplication.activities.Forgot_pass_Activity
 import com.example.myapplication.activities.Signup_Activity
 import com.example.myapplication.viewmodels.LoginViewModel
+import com.example.myapplication.theme.primaryBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,8 +57,8 @@ fun LoginScreen(
     val message by loginViewModel.message.collectAsState()
     val context = LocalContext.current
 
-    var login_email by remember { mutableStateOf("") }
-    var login_password by remember { mutableStateOf("") }
+    var loginEmail by remember { mutableStateOf("") }
+    var loginPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
     // Toast for login message
@@ -80,7 +81,6 @@ fun LoginScreen(
         }
     }
 
-    val primaryBlue = Color(0xFF1F6BAD)
 
     Column(
         modifier = Modifier
@@ -98,8 +98,8 @@ fun LoginScreen(
         )
 
         OutlinedTextField(
-            value = login_email,
-            onValueChange = { login_email = it },
+            value = loginEmail,
+            onValueChange = { loginEmail = it },
             label = { Text("Email") },
             singleLine = true,
             modifier = Modifier
@@ -109,14 +109,14 @@ fun LoginScreen(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = primaryBlue,
                 focusedLabelColor = primaryBlue,
-                unfocusedBorderColor = Color(0xFF1F6BAD),
+                unfocusedBorderColor = primaryBlue,
                 cursorColor = primaryBlue
             )
         )
 
         OutlinedTextField(
-            value = login_password,
-            onValueChange = { login_password = it },
+            value = loginPassword,
+            onValueChange = { loginPassword = it },
             label = { Text("Password") },
             singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -138,10 +138,10 @@ fun LoginScreen(
                 }
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xFF1F6BAD),
+                focusedBorderColor = primaryBlue,
                 focusedLabelColor = primaryBlue,
                 cursorColor = primaryBlue,
-                unfocusedBorderColor = Color(0xFF1F6BAD)
+                unfocusedBorderColor = primaryBlue
             )
         )
 
@@ -158,7 +158,7 @@ fun LoginScreen(
         )
 
         Button(
-            onClick = { loginViewModel.login(login_email, login_password) },
+            onClick = { loginViewModel.login(loginEmail, loginPassword) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
