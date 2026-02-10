@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 open class BaseAuthViewModel : ViewModel() {
     protected val mAuth = FirebaseAuth.getInstance()
     protected val db = FirebaseFirestore.getInstance()
-    protected val _message = MutableStateFlow<String?>(null)
-    val message: StateFlow<String?> = _message
+    protected val messageState = MutableStateFlow<String?>(null)
+    val message: StateFlow<String?> = messageState
 
     fun clearMessage() {
-        _message.value = null
+        messageState.value = null
     }
 }

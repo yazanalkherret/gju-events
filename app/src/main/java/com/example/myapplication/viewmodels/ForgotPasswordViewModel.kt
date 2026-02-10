@@ -1,16 +1,10 @@
 package com.example.myapplication.viewmodels
 
-import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-
 
 class ForgotPasswordViewModel : BaseAuthViewModel(){
     fun sendResetEmail(email: String) {
         if (email.isEmpty()) {
-            _message.value = "Please enter your email"
+            messageState.value = "Please enter your email"
             return
         }
         val safeEmail = email.replace(".", "_")
@@ -20,15 +14,15 @@ class ForgotPasswordViewModel : BaseAuthViewModel(){
                     mAuth.sendPasswordResetEmail(email)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                _message.value = "Reset email sent to $email"
+                                messageState.value = "Reset email sent to $email"
                             } else {
-                                _message.value = "Error: ${task.exception?.message}"
+                                messageState.value = "Error: ${task.exception?.message}"
                             }
                         }
                 }
             else {
 
-             _message.value = "Email not registered"
+             messageState.value = "Email not registered"
                 }
             }
 

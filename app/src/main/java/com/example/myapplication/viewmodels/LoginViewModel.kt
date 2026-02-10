@@ -11,11 +11,11 @@ open class LoginViewModel : BaseAuthViewModel() {
 
     fun login(email: String, password: String){
         if (email.isBlank()) {
-            _message.value = "Please enter your email"
+            messageState.value = "Please enter your email"
             return
         }
         if (password.isBlank()) {
-            _message.value = "Please enter your password"
+            messageState.value = "Please enter your password"
             return
         }
 
@@ -32,17 +32,17 @@ open class LoginViewModel : BaseAuthViewModel() {
                                     _loginSuccessRole.value = role
 
                                 } else {
-                                    _message.value = "User role not found."
+                                    messageState.value = "User role not found."
                                 }
                             }
                             .addOnFailureListener {
-                                _message.value = "Failed to fetch user data: ${it.message}"
+                                messageState.value = "Failed to fetch user data: ${it.message}"
                             }
                     } else {
-                        _message.value = "Please verify your email first."
+                        messageState.value = "Please verify your email first."
                     }
                 } else {
-                    _message.value = "Login failed: ${task.exception?.message}"
+                    messageState.value = "Login failed: ${task.exception?.message}"
                 }
             }
 
