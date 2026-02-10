@@ -7,14 +7,11 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.components.Enrollment
 import com.example.myapplication.components.Event
 import com.example.myapplication.components.EventReminderReceiver
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,8 +29,7 @@ data class User(
 )
 
 
-class EventViewModel() : ViewModel() {
-    private val db = FirebaseFirestore.getInstance()
+class EventViewModel() : BaseAuthViewModel() {
     private val _events = MutableStateFlow<List<Event>>(emptyList())
     val events: StateFlow<List<Event>> = _events.asStateFlow()
     private val _enrollments = MutableStateFlow<List<Enrollment>>(emptyList())
@@ -70,14 +66,13 @@ class EventViewModel() : ViewModel() {
 
     private val _currentUser = MutableStateFlow(
         User(
-            email = FirebaseAuth.getInstance().currentUser?.email?:"" ,
+            email = mAuth.currentUser?.email?:"" ,
             isAdmin = false
         )
     )
 
     val currentUser: StateFlow<User> = _currentUser.asStateFlow()
 
-    private val auth = FirebaseAuth.getInstance()
     init {
         fetchEventsRealTime() // Start listening for data changes
     }
@@ -196,7 +191,6 @@ class EventViewModel() : ViewModel() {
         onError: (Exception) -> Unit
     ) {
         // Get reference to Firestore collection
-        val db = FirebaseFirestore.getInstance()
         db.collection("events").document(eventId)
             .delete()
             .addOnSuccessListener {

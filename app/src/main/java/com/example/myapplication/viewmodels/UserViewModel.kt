@@ -1,9 +1,6 @@
 package com.example.myapplication.viewmodels
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,10 +14,7 @@ data class UserData(
     val certificate: Int = 0
 )
 
-class UserViewModel : ViewModel() {
-    private val auth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
-
+class UserViewModel : BaseAuthViewModel() {
     private val _userData = MutableStateFlow<UserData?>(null)
     val userData: StateFlow<UserData?> = _userData.asStateFlow()
 
@@ -29,7 +23,7 @@ class UserViewModel : ViewModel() {
     }
     private fun loadUserData() {
         viewModelScope.launch {
-            auth.currentUser?.email?.let { email ->
+            mAuth.currentUser?.email?.let { email ->
                 val safeEmail = email.replace(".", "_")
                 db.collection("users").document(safeEmail)
                     .addSnapshotListener { snapshot, error ->
