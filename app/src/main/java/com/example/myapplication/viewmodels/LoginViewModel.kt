@@ -1,18 +1,9 @@
 package com.example.myapplication.viewmodels
 
-import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class LoginViewModel : ViewModel(){
-
-    private val mAuth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
-
-    private val _message = MutableStateFlow<String?>(null)
-    val message: StateFlow<String?> = _message
+open class LoginViewModel : BaseAuthViewModel() {
 
     private val _loginSuccessRole = MutableStateFlow<String?>(null)
     val loginSuccessRole: StateFlow<String?> = _loginSuccessRole
@@ -55,9 +46,6 @@ class LoginViewModel : ViewModel(){
                 }
             }
 
-    }
-    fun clearMessage() {
-        _message.value = null
     }
     fun clearLoginSuccess() {
         _loginSuccessRole.value = null

@@ -8,13 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class SignupViewModel : ViewModel() {
-
-    private val mAuth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
-
-    private val _message = MutableStateFlow<String?>(null)
-    val message: StateFlow<String?> = _message
+class SignupViewModel : BaseAuthViewModel() {
 
     fun createAccount(fullName: String, email: String, password: String, confirmPassword: String, major: String){
         if (fullName.isEmpty()) {
@@ -67,11 +61,6 @@ class SignupViewModel : ViewModel() {
                     }
                 }
         }
-    }
-
-
-    fun clearMessage() {
-        _message.value = null
     }
 
 

@@ -7,14 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 
-class ForgotPasswordViewModel : ViewModel(){
-
-    private val _message = MutableStateFlow<String?>(null)
-    val message: StateFlow<String?> = _message
-
-    private val db = FirebaseFirestore.getInstance()
-    private val mAuth = FirebaseAuth.getInstance()
-
+class ForgotPasswordViewModel : BaseAuthViewModel(){
     fun sendResetEmail(email: String) {
         if (email.isEmpty()) {
             _message.value = "Please enter your email"
@@ -39,11 +32,6 @@ class ForgotPasswordViewModel : ViewModel(){
                 }
             }
 
-
-
     }
 
-    fun clearMessage() {
-        _message.value = null
-    }
 }
