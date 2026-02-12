@@ -1,3 +1,9 @@
+>  **Refactoring in Progress**
+> 
+> The project is currently being refactored to improve architecture, scalability, and code quality.
+> Additional features and performance improvements are actively being implemented.
+> Some functionality may change during this transition.
+
 # GJU Events
 
 **GJU Events** is an Android application developed for students and staff at the German Jordanian University (GJU). The app enables users to view and manage university-related events through a modern and user-friendly interface. It supports features like user authentication, event listing, and interaction through Jetpack Compose.
